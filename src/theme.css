@@ -1,0 +1,199 @@
+:root {
+    /* Core theme colors */
+    --vscode-editor-background: #1e1e1e;
+    --vscode-editor-foreground: #d4d4d4;
+    --vscode-accent: #007acc;
+    --vscode-sidebar-background: #252526;
+    --vscode-terminal-background: #1e1e1e;
+
+    /* Text colors */
+    --vscode-text-primary: #cccccc;
+    --vscode-text-secondary: #9d9d9d;
+    --vscode-text-link: #3794ff;
+    --vscode-text-active: #ffffff;
+    --vscode-text-inactive: #6b6b6b;
+
+    /* UI Element colors */
+    --vscode-border: #2d2d2d;
+    --vscode-button-background: #0e639c;
+    --vscode-button-hover-background: #1177bb;
+    --vscode-button-active-background: #1177bb;
+    --vscode-dropdown-background: #3c3c3c;
+    --vscode-dropdown-border: #3c3c3c;
+    --vscode-input-background: #3c3c3c;
+    --vscode-input-border: #3c3c3c;
+    --vscode-input-foreground: #cccccc;
+    --vscode-input-placeholder: #9d9d9d;
+
+    /* List and tree colors */
+    --vscode-list-active-selection-background: #094771;
+    --vscode-list-active-selection-foreground: #ffffff;
+    --vscode-list-hover-background: #2a2d2e;
+    --vscode-list-inactive-selection-background: #37373d;
+    --vscode-tree-indent-guide: #404040;
+
+    /* Editor colors */
+    --vscode-editor-line-number: #858585;
+    --vscode-editor-active-line-number: #c6c6c6;
+    --vscode-editor-selection-background: #264f78;
+    --vscode-editor-word-highlight-background: #575757;
+    --vscode-editor-cursor: #d4d4d4;
+    --vscode-editor-bracket-match: #707070;
+
+    /* Tab colors */
+    --vscode-tab-active-background: var(--vscode-editor-background);
+    --vscode-tab-inactive-background: #2d2d2d;
+    --vscode-tab-active-foreground: #ffffff;
+    --vscode-tab-inactive-foreground: #9d9d9d;
+    --vscode-tab-border: #252526;
+
+    /* Panel colors */
+    --vscode-panel-background: #1e1e1e;
+    --vscode-panel-border: #2d2d2d;
+    --vscode-panel-title-active: #e7e7e7;
+    --vscode-panel-title-inactive: #9d9d9d;
+
+    /* Status bar colors */
+    --vscode-statusbar-background: #007acc;
+    --vscode-statusbar-foreground: #ffffff;
+    --vscode-statusbar-border: #007acc;
+
+    /* Notification colors */
+    --vscode-notification-background: #1e1e1e;
+    --vscode-notification-foreground: #cccccc;
+    --vscode-notification-border: #2d2d2d;
+
+    /* Badge colors */
+    --vscode-badge-background: #4d4d4d;
+    --vscode-badge-foreground: #ffffff;
+
+    /* Scrollbar colors */
+    --vscode-scrollbar-shadow: #000000;
+    --vscode-scrollbarSlider-background: #79797966;
+    --vscode-scrollbarSlider-hoverBackground: #646464b3;
+    --vscode-scrollbarSlider-activeBackground: #bfbfbf66;
+}
+
+/* Theme transitions */
+* {
+    transition: background-color 0.3s ease,
+        color 0.3s ease,
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+/* Theme utility classes */
+.bg-vscode-editor {
+    background-color: var(--vscode-editor-background);
+    color: var(--vscode-editor-foreground);
+}
+
+.bg-vscode-sidebar {
+    background-color: var(--vscode-sidebar-background);
+    color: var(--vscode-text-primary);
+}
+
+.text-vscode-accent {
+    color: var(--vscode-accent);
+}
+
+.border-vscode {
+    border-color: var(--vscode-border);
+}
+
+.text-vscode-primary {
+    color: var(--vscode-text-primary);
+}
+
+.text-vscode-secondary {
+    color: var(--vscode-text-secondary);
+}
+
+.bg-vscode-input {
+    background-color: var(--vscode-input-background);
+    border-color: var(--vscode-input-border);
+    color: var(--vscode-input-foreground);
+}
+
+.bg-vscode-button {
+    background-color: var(--vscode-button-background);
+    color: var(--vscode-text-active);
+}
+
+.bg-vscode-button:hover {
+    background-color: var(--vscode-button-hover-background);
+}
+
+.bg-vscode-list-hover:hover {
+    background-color: var(--vscode-list-hover-background);
+}
+
+.bg-vscode-tab-active {
+    background-color: var(--vscode-tab-active-background);
+    color: var(--vscode-tab-active-foreground);
+}
+
+.bg-vscode-tab-inactive {
+    background-color: var(--vscode-tab-inactive-background);
+    color: var(--vscode-tab-inactive-foreground);
+}
+
+.bg-vscode-statusbar {
+    background-color: var(--vscode-statusbar-background);
+    color: var(--vscode-statusbar-foreground);
+    border-color: var(--vscode-statusbar-border);
+}
+
+/* Hide scrollbar but keep functionality */
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari and Opera */
+}
+
+/* Apply to main content and settings */
+.main-content,
+.settings-content {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.main-content::-webkit-scrollbar,
+.settings-content::-webkit-scrollbar {
+    display: none;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 14px;
+    height: 14px;
+}
+
+::-webkit-scrollbar-corner {
+    background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--vscode-scrollbarSlider-background);
+    border: 3px solid transparent;
+    border-radius: 7px;
+    background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--vscode-scrollbarSlider-hoverBackground);
+}
+
+::-webkit-scrollbar-thumb:active {
+    background-color: var(--vscode-scrollbarSlider-activeBackground);
+}
+
+::-webkit-scrollbar-track {
+    background-color: var(--vscode-editor-background);
+}

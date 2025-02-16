@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <line x1="0" y1="0" x2="50" y2="0" stroke="currentColor" stroke-width="0.5" stroke-dasharray="4 4"/>
+  <line x1="0" y1="25" x2="50" y2="25" stroke="currentColor" stroke-width="0.5" stroke-dasharray="4 4"/>
+  <line x1="0" y1="50" x2="50" y2="50" stroke="currentColor" stroke-width="0.5" stroke-dasharray="4 4"/>
+  <line x1="0" y1="0" x2="0" y2="50" stroke="currentColor" stroke-width="0.5" stroke-dasharray="4 4"/>
+  <line x1="25" y1="0" x2="25" y2="50" stroke="currentColor" stroke-width="0.5" stroke-dasharray="4 4"/>
+  <line x1="50" y1="0" x2="50" y2="50" stroke="currentColor" stroke-width="0.5" stroke-dasharray="4 4"/>
+  <circle cx="0" cy="0" r="1" fill="currentColor"/>
+  <circle cx="25" cy="0" r="1" fill="currentColor"/>
+  <circle cx="50" cy="0" r="1" fill="currentColor"/>
+  <circle cx="0" cy="25" r="1" fill="currentColor"/>
+  <circle cx="25" cy="25" r="1" fill="currentColor"/>
+  <circle cx="50" cy="25" r="1" fill="currentColor"/>
+  <circle cx="0" cy="50" r="1" fill="currentColor"/>
+  <circle cx="25" cy="50" r="1" fill="currentColor"/>
+  <circle cx="50" cy="50" r="1" fill="currentColor"/>
+</svg> 
