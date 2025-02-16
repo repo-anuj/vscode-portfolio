@@ -41,7 +41,7 @@ const Header = ({ onMenuClick, onContactClick }: HeaderProps) => {
       {/* Right side - Buttons */}
       <div className="flex items-center gap-2">
         <a
-          href="https://github.com/yourusername"
+          href="https://github.com/repo-anuj"
           target="_blank"
           rel="noopener noreferrer"
           className="text-gray-400 hover:text-white transition-colors p-2 rounded-md hover:bg-white/10"
