@@ -12,7 +12,7 @@ const portfolioStructure: FolderItem = {
     { name: 'Work.tsx', type: 'file', path: '/pages/Work', icon: Briefcase },
     { name: 'Skills.tsx', type: 'file', path: '/pages/Skills', icon: Code },
     { name: 'Projects.tsx', type: 'file', path: '/pages/Projects', icon: FolderGit },
-    { name: 'Profile.tsx', type: 'file', path: './components/Profile', icon: User },
+    // { name: 'Profile.tsx', type: 'file', path: './components/Profile', icon: User },
   ]
 }
 

@@ -1,15 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
-  User, Mail, MapPin, Globe, Github, Linkedin, 
-  Calendar, BookOpen, Code2, Award, Briefcase,
-  ChevronRight, ChevronDown, Terminal
+  User, Mail, MapPin, Globe, BookOpen, Code2, Award, Briefcase,
+  ChevronRight, Terminal
 } from 'lucide-react'
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
-import '@fontsource/fira-code'
-import '@fontsource/space-grotesk'
-import '@fontsource/inter'
+// import '@fontsource/fira-code'
+// import '@fontsource/space-grotesk'
+// import '@fontsource/inter'
 
 gsap.registerPlugin(ScrollTrigger)
 

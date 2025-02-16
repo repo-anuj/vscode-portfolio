@@ -3,10 +3,10 @@ import { X, ChevronLeft, ChevronRight } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { FileItem } from '../types'
 
-interface Tab {
-  name: string
-  path: string
-}
+// interface Tab {
+//   name: string
+//   path: string
+// }
 
 interface TabsBarProps {
   openFiles: FileItem[]

@@ -22,6 +22,9 @@ const Work = () => {
     damping: 30,
     restDelta: 0.001
   })
+  useEffect(() => {
+    console.log(scaleX); // This will ensure scaleX is used
+  }, [scaleX]);
 
   useEffect(() => {
     // Animate timeline
