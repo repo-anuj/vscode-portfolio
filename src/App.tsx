@@ -138,7 +138,7 @@ const App: React.FC = () => {
         onMenuClick={() => setIsExplorerOpen(!isExplorerOpen)} 
         onContactClick={handleContactClick}
       />
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex-1 flex overflow-hidden">
         <div className="flex">
           <Sidebar 
             onBugClick={handleBugClick}
@@ -152,15 +152,15 @@ const App: React.FC = () => {
             onClose={() => setIsExplorerOpen(false)}
           />
         </div>
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 flex flex-col min-w-0">
           <TabsBar
             openFiles={openFiles}
             activeFile={activeFile}
             onTabClick={handleTabClick}
             onTabClose={handleTabClose}
           />
-          <div className={`flex-1 overflow-auto relative ${showTerminal ? 'pb-[280px]' : ''}`}>
-            <div className="h-full overflow-y-auto main-content">
+          <div className="flex-1 relative overflow-hidden">
+            <div className="h-full overflow-y-auto">
               {renderContent()}
             </div>
             {showTerminal && (
@@ -170,6 +170,7 @@ const App: React.FC = () => {
                   setIsContactMode(false)
                 }} 
                 startContactForm={isContactMode}
+                className="absolute bottom-0 left-0 right-0 h-[280px] bg-vscode-terminal"
               />
             )}
           </div>
