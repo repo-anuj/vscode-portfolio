@@ -135,27 +135,27 @@ const Work = () => {
       </div>
 
       {/* Content Container */}
-      <div className="relative w-full max-w-4xl mx-auto px-8 py-16">
+      <div className="relative w-full max-w-4xl mx-auto px-4 sm:px-6 md:px-8 py-8 sm:py-12 md:py-16">
         {/* Header Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-16"
+          className="text-center mb-8 sm:mb-12 md:mb-16"
         >
-          <span className="text-vscode-accent font-['Fira_Code'] text-sm tracking-wider mb-3 block">
+          <span className="text-vscode-accent font-['Fira_Code'] text-xs sm:text-sm tracking-wider mb-2 sm:mb-3 block">
             {'<Work Experience />'}
           </span>
-          <h1 className="text-4xl lg:text-5xl font-bold text-white mb-6 font-['Space_Grotesk']">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6 font-['Space_Grotesk']">
             My Professional Journey
           </h1>
-          <p className="text-white/60 font-['Inter'] max-w-2xl mx-auto">
+          <p className="text-white/60 font-['Inter'] max-w-2xl mx-auto text-sm sm:text-base px-4">
             A timeline of my professional experience, showcasing projects and roles 
             that have shaped my development journey.
           </p>
         </motion.div>
 
         {/* Timeline */}
-        <div className="relative" ref={timelineRef}>
+        <div className="relative pl-4 sm:pl-0" ref={timelineRef}>
           {/* Timeline Line */}
           <motion.div 
             className="timeline-line absolute left-0 top-0 w-[2px] h-full bg-gradient-to-b from-vscode-accent/50 via-vscode-accent to-vscode-accent/50"
@@ -163,7 +163,7 @@ const Work = () => {
           />
 
           {/* Work Items */}
-          <div className="space-y-16 relative">
+          <div className="space-y-8 sm:space-y-12 md:space-y-16 relative">
             {workExperience.map((work, index) => (
               <motion.div
                 key={work.title}
@@ -171,24 +171,24 @@ const Work = () => {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.2 }}
-                className="relative pl-8"
+                className="relative pl-6 sm:pl-8"
               >
                 {/* Timeline Dot */}
                 <div className="timeline-dot absolute -left-[5px] top-0 w-3 h-3 rounded-full bg-vscode-accent 
                   shadow-[0_0_0_4px_rgba(0,122,204,0.1)] transition-shadow duration-500" />
 
                 {/* Content Card */}
-                <div className="bg-white/5 rounded-lg p-6 border border-white/10 hover:border-vscode-accent/50 
+                <div className="bg-white/5 rounded-lg p-4 sm:p-6 border border-white/10 hover:border-vscode-accent/50 
                   transition-all duration-300 group hover:shadow-lg hover:shadow-vscode-accent/10">
                   {/* Header */}
-                  <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4 mb-4">
                     <div>
-                      <h3 className="text-xl text-white font-['Space_Grotesk'] mb-2 flex items-center gap-2">
-                        {work.title}
-                        <ChevronRight size={18} className="text-vscode-accent transition-transform group-hover:translate-x-1" />
+                      <h3 className="text-lg sm:text-xl text-white font-['Space_Grotesk'] mb-2 flex flex-wrap items-center gap-2">
+                        <span className="mr-1">{work.title}</span>
+                        <ChevronRight size={18} className="text-vscode-accent transition-transform group-hover:translate-x-1 hidden sm:block" />
                         <span className="text-vscode-accent">{work.company}</span>
                       </h3>
-                      <div className="flex items-center gap-4 text-white/60 text-sm font-['Inter']">
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 text-white/60 text-xs sm:text-sm font-['Inter']">
                         <span className="flex items-center gap-1">
                           <Calendar size={14} />
                           {work.period}
@@ -202,24 +202,22 @@ const Work = () => {
                   </div>
 
                   {/* Description */}
-                  <ul className="space-y-2 mb-6">
+                  <ul className="mb-4 space-y-2 text-white/70 text-sm sm:text-base">
                     {work.description.map((item, i) => (
-                      <li key={i} className="text-white/70 font-['Inter'] flex gap-2 group-hover:text-white/90 transition-colors">
-                        <ChevronRight size={18} className="text-vscode-accent shrink-0 mt-1 transition-transform group-hover:translate-x-1" />
-                        <span>{item}</span>
+                      <li key={i} className="flex items-start">
+                        <ChevronRight size={16} className="text-vscode-accent mt-1 shrink-0" />
+                        <span className="ml-2">{item}</span>
                       </li>
                     ))}
                   </ul>
 
                   {/* Technologies */}
                   <div className="flex flex-wrap gap-2">
-                    {work.technologies.map((tech) => (
+                    {work.technologies.map((tech, i) => (
                       <span
-                        key={tech}
-                        className="tech-badge px-3 py-1.5 bg-vscode-accent/10 text-vscode-accent 
-                          text-sm font-['Inter'] rounded-md border border-vscode-accent/20
-                          hover:border-vscode-accent/40 transition-all duration-300
-                          hover:shadow-[0_0_10px_rgba(0,122,204,0.2)] hover:scale-105"
+                        key={i}
+                        className="tech-badge px-2 py-1 text-xs rounded-md bg-vscode-accent/10 text-vscode-accent 
+                        border border-vscode-accent/20 hover:border-vscode-accent/40 transition-colors"
                       >
                         {tech}
                       </span>
@@ -235,4 +233,4 @@ const Work = () => {
   )
 }
 
-export default Work 
+export default Work

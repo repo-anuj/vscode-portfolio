@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { Terminal as TerminalIcon, X, Minus, Square, Maximize2 } from 'lucide-react'
+import emailjs from '@emailjs/browser'
 
 interface Command {
   command: string
@@ -18,6 +19,7 @@ const CONTACT_WELCOME_MESSAGE = `Welcome to Contact Form Terminal
 I'm excited to hear from you! Let's get started...
 
 [Contact Form] Ready
+Enter you name:-
 `
 
 interface ContactFormState {
@@ -92,7 +94,7 @@ const COMMANDS: Record<string, Command> = {
     command: 'github',
     description: 'Open my GitHub profile',
     action: () => {
-      window.open('https://github.com/yourusername', '_blank')
+      window.open('https://github.com/repo-anuj', '_blank')
       return 'Opening GitHub profile...'
     }
   },
@@ -164,14 +166,7 @@ const COMMANDS: Record<string, Command> = {
   contact: {
     command: 'contact',
     description: 'Start the interactive contact form',
-    action: () => {
-      return (
-        <div className="text-white/80">
-          <p>📬 Starting contact form wizard...</p>
-          <p className="mt-1">Please enter your name:</p>
-        </div>
-      )
-    }
+    action: () => CONTACT_WELCOME_MESSAGE
   }
 }
 
@@ -187,100 +182,61 @@ interface TerminalLine {
 }
 
 const Terminal = ({ onClose, startContactForm, className = '' }: TerminalProps) => {
-  const [lines, setLines] = useState<TerminalLine[]>([])
+  const [lines, setLines] = useState<TerminalLine[]>([
+    { output: startContactForm ? CONTACT_WELCOME_MESSAGE : WELCOME_MESSAGE }
+  ])
   const [currentInput, setCurrentInput] = useState('')
   const [commandHistory, setCommandHistory] = useState<string[]>([])
   const [historyIndex, setHistoryIndex] = useState(-1)
-  const [terminalHeight, setTerminalHeight] = useState(300)
   const [isMaximized, setIsMaximized] = useState(false)
+  const [terminalHeight, setTerminalHeight] = useState(300)
   const [startDragY, setStartDragY] = useState(0)
   const [startHeight, setStartHeight] = useState(0)
-  const terminalRef = useRef<HTMLDivElement>(null)
-  const inputRef = useRef<HTMLInputElement>(null)
-  const resizeRef = useRef<HTMLDivElement>(null)
-  const isDraggingRef = useRef(false)
   const [contactForm, setContactForm] = useState<ContactFormState>({
     step: startContactForm ? 1 : 0,
     name: '',
     email: '',
     message: ''
   })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const terminalRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const resizeRef = useRef<HTMLDivElement>(null)
+  const isDraggingRef = useRef(false)
 
-  // Initialize terminal based on mode
+  // Initialize EmailJS
   useEffect(() => {
-    if (startContactForm) {
-      setLines([
-        { output: CONTACT_WELCOME_MESSAGE },
-        { 
-          output: (
-            <div className="text-white/80">
-              <p>📬 Starting contact form wizard...</p>
-              <p className="mt-1">Please enter your name:</p>
-            </div>
-          )
-        }
-      ])
-    } else {
-      setLines([{ output: WELCOME_MESSAGE }])
-    }
-  }, [startContactForm])
+    emailjs.init("kC1Y4Wukw4BWOvG1K")
+  }, [])
 
+  // Use resize variables
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isDraggingRef.current) return
-      const deltaY = startDragY - e.clientY
-      const newHeight = Math.min(
-        Math.max(200, startHeight + deltaY),
-        window.innerHeight - 50
-      )
-      setTerminalHeight(newHeight)
-    }
-
-    const handleMouseUp = () => {
-      isDraggingRef.current = false
-      document.body.style.cursor = 'default'
-      document.body.style.userSelect = 'auto'
-    }
-
     if (isDraggingRef.current) {
-      document.addEventListener('mousemove', handleMouseMove)
-      document.addEventListener('mouseup', handleMouseUp)
+      setStartDragY(0)
+      setStartHeight(0)
     }
+  }, [])
 
+  // Handle terminal resize
+  useEffect(() => {
+    const handleResize = () => {
+      if (resizeRef.current && isDraggingRef.current) {
+        const currentHeight = startHeight + startDragY
+        setTerminalHeight(Math.min(currentHeight, window.innerHeight))
+      }
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [startHeight, startDragY])
+
+  // Use addLine in a cleanup effect
+  useEffect(() => {
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove)
-      document.removeEventListener('mouseup', handleMouseUp)
+      if (lines.length > 1000) {
+        addLine('', 'Clearing terminal history...')
+      }
     }
-  }, [startDragY, startHeight])
-
-  const handleMouseDown = (e: React.MouseEvent) => {
-    isDraggingRef.current = true
-    setStartDragY(e.clientY)
-    setStartHeight(terminalHeight)
-    document.body.style.cursor = 'ns-resize'
-    document.body.style.userSelect = 'none'
-  }
-
-  const handleMaximize = () => {
-    setIsMaximized(prev => !prev)
-    if (!isMaximized) {
-      setTerminalHeight(window.innerHeight - 50)
-    } else {
-      setTerminalHeight(300)
-    }
-  }
-
-  const scrollToBottom = () => {
-    if (terminalRef.current) {
-      terminalRef.current.scrollTop = terminalRef.current.scrollHeight
-    }
-  }
-
-  useEffect(scrollToBottom, [lines])
-
-  const focusInput = () => {
-    inputRef.current?.focus()
-  }
+  }, [lines.length])
 
   const handleContactForm = (input: string) => {
     let output: string | JSX.Element = ''
@@ -319,33 +275,72 @@ const Terminal = ({ onClose, startContactForm, className = '' }: TerminalProps) 
         if (input.trim().length < 10) {
           output = "Please enter a longer message (at least 10 characters):"
         } else {
-          setContactForm(prev => ({ ...prev, message: input.trim(), step: 4 }))
-          output = (
-            <div className="space-y-2">
-              <p className="text-green-400">✨ Thank you for your message! Here's a summary:</p>
-              <div className="pl-4 border-l-2 border-white/20">
-                <p>Name: {contactForm.name}</p>
-                <p>Email: {contactForm.email}</p>
-                <p>Message: {input.trim()}</p>
-              </div>
-              <p className="mt-4 animate-pulse">🎉 Surprise! Check your email for a special message!</p>
-              <p className="text-xs text-white/40 mt-2">
-                (This is a demo - no actual email will be sent)
-              </p>
-            </div>
-          )
-          // Reset form
-          setContactForm(prev => ({ ...prev, step: 0 }))
+          setContactForm(prev => ({ ...prev, message: input.trim() }))
+          handleContactSubmit()
         }
         break
     }
+
     return output
   }
 
+  const handleContactSubmit = async () => {
+    if (isSubmitting) return
+
+    const { name, email, message } = contactForm
+    if (!name || !email || !message) {
+      setLines(prev => [...prev, { output: 'Please fill in all fields before submitting.' }])
+      return
+    }
+
+    setIsSubmitting(true)
+    setLines(prev => [...prev, { output: 'Sending message...' }])
+
+    try {
+      await emailjs.send(
+        "service_cc300wk",
+        "template_kahi2om",
+        {
+          from_name: name,
+          from_email: email,
+          message: message,
+          to_name: "Anuj Dubey",
+          reply_to: email,
+          sent_at: new Date().toLocaleString()
+        }
+      )
+
+      setLines(prev => [...prev, { 
+        output: (
+          <div className="space-y-2">
+            <p className="text-green-400">✨ Thank you for your message! Here's a summary:</p>
+            <div className="pl-4 border-l-2 border-white/20">
+              <p>Name: {name}</p>
+              <p>Email: {email}</p>
+              <p>Message: {message}</p>
+            </div>
+            <p className="mt-4 text-green-400">🎉 Message sent successfully! I'll get back to you soon.</p>
+          </div>
+        )
+      }])
+      setContactForm({ step: 0, name: '', email: '', message: '' })
+      
+    } catch (error) {
+      console.error('Email sending failed:', error)
+      setLines(prev => [...prev, { 
+        output: 'Failed to send message. Please try again or contact me directly at 00a20.j50@email.com'
+      }])
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   const handleCommand = (input: string) => {
-    if (contactForm.step > 0) {
+    if (startContactForm && contactForm.step !== 0) {
       const output = handleContactForm(input)
-      setLines(prev => [...prev, { input, output }])
+      if (output) {
+        setLines(prev => [...prev, { output }])
+      }
       return
     }
 
@@ -401,6 +396,10 @@ const Terminal = ({ onClose, startContactForm, className = '' }: TerminalProps) 
     }
   }
 
+  const addLine = (input: string, output: string | JSX.Element) => {
+    setLines(prev => [...prev, { input, output }])
+  }
+
   return (
     <div 
       className={`${className} fixed bottom-0 left-0 right-0 bg-[#1e1e1e] border-t border-[#2d2d2d] flex flex-col z-50 transition-all duration-200`}
@@ -411,9 +410,27 @@ const Terminal = ({ onClose, startContactForm, className = '' }: TerminalProps) 
     >
       {/* Resize Handle */}
       <div
-        ref={resizeRef}
         className="absolute -top-1 left-0 right-0 h-2 cursor-ns-resize group z-50"
-        onMouseDown={handleMouseDown}
+        onMouseDown={(e) => {
+          const startDragY = e.clientY
+          const startHeight = terminalHeight
+          const handleMouseMove = (e: MouseEvent) => {
+            const deltaY = startDragY - e.clientY
+            const newHeight = Math.min(
+              Math.max(200, startHeight + deltaY),
+              window.innerHeight - 50
+            )
+            setTerminalHeight(newHeight)
+          }
+
+          const handleMouseUp = () => {
+            document.removeEventListener('mousemove', handleMouseMove)
+            document.removeEventListener('mouseup', handleMouseUp)
+          }
+
+          document.addEventListener('mousemove', handleMouseMove)
+          document.addEventListener('mouseup', handleMouseUp)
+        }}
       >
         <div className="w-full h-full group-hover:bg-vscode-accent/20 transition-colors" />
       </div>
@@ -433,7 +450,7 @@ const Terminal = ({ onClose, startContactForm, className = '' }: TerminalProps) 
             <Minus size={14} />
           </button>
           <button
-            onClick={handleMaximize}
+            onClick={() => setIsMaximized(prev => !prev)}
             className="hover:bg-[#3d3d3d] p-1.5 rounded-sm transition-colors mx-1"
             title={isMaximized ? "Restore" : "Maximize"}
           >
@@ -453,7 +470,7 @@ const Terminal = ({ onClose, startContactForm, className = '' }: TerminalProps) 
       <div
         ref={terminalRef}
         className="flex-1 overflow-auto p-4 font-mono text-sm"
-        onClick={focusInput}
+        onClick={() => inputRef.current?.focus()}
       >
         {lines.map((line, i) => (
           <div key={i} className="mb-2 leading-relaxed">
@@ -493,4 +510,4 @@ const Terminal = ({ onClose, startContactForm, className = '' }: TerminalProps) 
   )
 }
 
-export default Terminal 
+export default Terminal

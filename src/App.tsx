@@ -96,8 +96,8 @@ const App: React.FC = () => {
 
     if (!activeFile) {
       return (
-        <div className="h-full flex items-center justify-center text-white/40">
-          <p>Select a file from the explorer to view its content</p>
+        <div className="h-full w-full flex items-center justify-center text-center px-4">
+          <p className="text-white/40 text-sm">Select a file from the explorer to view its content</p>
         </div>
       )
     }

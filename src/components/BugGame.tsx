@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { Bug, Volume2, VolumeX } from 'lucide-react'
+import ConfettiGenerator from 'confetti-js'
 
 interface BugPosition {
   id: number
@@ -24,18 +25,46 @@ const BugGame = () => {
   const [timeLeft, setTimeLeft] = useState(30)
   const [level, setLevel] = useState(1)
   const [isMuted, setIsMuted] = useState(false)
+  const confettiRef = useRef<HTMLCanvasElement>(null)
 
   // Sound effects
   const shootSound = new Audio('/sounds/shoot.mp3')
   const bugDeathSound = new Audio('/sounds/bug-death.mp3')
   const gameOverSound = new Audio('/sounds/game-over.mp3')
+  const levelUpSound = new Audio('/sounds/level-up.mp3')
 
-  const playSound = (sound: HTMLAudioElement) => {
+  const playSound = useCallback((sound: HTMLAudioElement) => {
     if (!isMuted) {
       sound.currentTime = 0
-      sound.play()
+      sound.play().catch(() => {
+        // Handle any playback errors silently
+      })
     }
-  }
+  }, [isMuted])
+
+  const startConfetti = useCallback(() => {
+    if (confettiRef.current) {
+      const confettiSettings = {
+        target: confettiRef.current,
+        max: 80,
+        size: 1.5,
+        animate: true,
+        props: ['circle', 'square', 'triangle', 'line'],
+        colors: [[165, 104, 246], [230, 61, 135], [0, 199, 228], [253, 214, 126]],
+        clock: 25,
+        rotate: true,
+        start_from_edge: true,
+        respawn: false
+      }
+      const confetti = new ConfettiGenerator(confettiSettings)
+      confetti.render()
+
+      // Stop confetti after 2 seconds
+      setTimeout(() => {
+        confetti.clear()
+      }, 2000)
+    }
+  }, [])
 
   const spawnBug = useCallback(() => {
     const sizes: ('small' | 'medium' | 'large')[] = ['small', 'medium', 'large']
@@ -60,6 +89,7 @@ const BugGame = () => {
       if (newScore > highScore) {
         setHighScore(newScore)
         localStorage.setItem('bugHunterHighScore', newScore.toString())
+        startConfetti() // Celebrate new high score
       }
       return newScore
     })
@@ -143,8 +173,22 @@ const BugGame = () => {
     }
   }, [score, level])
 
+  // Level up effect
+  useEffect(() => {
+    if (level > 1) {
+      playSound(levelUpSound)
+      startConfetti()
+    }
+  }, [level, playSound, startConfetti])
+
   return (
     <div className="relative w-full h-full bg-[#1e1e1e] overflow-hidden p-6">
+      <canvas 
+        ref={confettiRef}
+        className="fixed inset-0 pointer-events-none z-50"
+        style={{ width: '100%', height: '100%' }}
+      />
+      
       {/* Header */}
       <div className="absolute top-4 right-4 z-10">
         <button
@@ -219,4 +263,4 @@ const BugGame = () => {
   )
 }
 
-export default BugGame 
+export default BugGame

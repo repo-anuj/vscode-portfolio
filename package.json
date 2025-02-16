@@ -10,12 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "@fontsource/fira-code": "^5.1.1",
     "@fontsource/inter": "^5.1.1",
     "@fontsource/space-grotesk": "^5.1.1",
     "@shadcn/ui": "^0.0.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "confetti-js": "^0.0.18",
     "framer-motion": "^12.0.1",
     "gsap": "^3.12.7",
     "lucide-react": "^0.473.0",

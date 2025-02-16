@@ -6,6 +6,20 @@ interface HeaderProps {
 }
 
 const Header = ({ onMenuClick, onContactClick }: HeaderProps) => {
+  const handleResumeClick = () => {
+    // Create a link element
+    const link = document.createElement('a')
+    link.href = '/Anuj_Dubey_Resume.pdf'
+    link.download = 'Anuj_Dubey_Resume.pdf' // This will force download instead of opening in new tab
+    link.target = '_blank'
+    link.rel = 'noopener noreferrer'
+    
+    // Append to body, click, and remove
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
   return (
     <header className="h-12 bg-vscode-titlebar flex items-center justify-between px-4 select-none">
       {/* Left side - VS Code Logo */}
@@ -34,35 +48,29 @@ const Header = ({ onMenuClick, onContactClick }: HeaderProps) => {
         >
           <Github size={20} />
         </a>
-        {/* <a
-          href="mailto:your.email@example.com"
-          className="text-gray-400 hover:text-white transition-colors p-2 rounded-md hover:bg-white/10"
-        >
-          <Mail size={20} />
-        </a> */}
         <button
-          onClick={() => window.open('/Anuj_Dubey_Resume.pdf', '_blank')}
-          className="sm:flex items-center gap-1 text-gray-400 hover:text-white transition-colors p-2 rounded-md hover:bg-white/10"
+          onClick={handleResumeClick}
+          className="sm:flex items-center gap-1 text-gray-400 hover:text-white transition-colors p-2 rounded-md hover:bg-white/10 group"
+          title="Download Resume"
         >
-          <FileText size={20} />
+          <FileText size={20} className="group-hover:scale-105 transition-transform" />
           <span className="text-sm hidden sm:flex">Resume</span>
         </button>
         <button
-        onClick={onContactClick}
+          onClick={onContactClick}
           className="hidden sm:block text-sm text-white bg-vscode-accent hover:bg-vscode-accent/80 px-3 py-1 rounded"
         >
           Contact
         </button>
+        <button
+          onClick={onMenuClick}
+          className="text-gray-400 hover:text-white transition-colors p-2 rounded-md hover:bg-white/10 md:hidden"
+        >
+          <Menu size={20} />
+        </button>
       </div>
-
-      <button 
-        onClick={onMenuClick}
-        className="md:hidden text-white/60 hover:text-white transition-colors"
-      >
-        <Menu size={18} />
-      </button>
     </header>
   )
 }
 
-export default Header 
+export default Header
