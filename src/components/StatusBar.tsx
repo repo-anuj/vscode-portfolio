@@ -1,4 +1,4 @@
-import { GitBranch, Wifi, Zap, FileJson, Globe, Check } from 'lucide-react'
+import { GitBranch, Wifi, Zap, FileJson, Globe  } from 'lucide-react'
 
 const StatusBar = () => {
   return (

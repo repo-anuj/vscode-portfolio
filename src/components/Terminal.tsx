@@ -177,7 +177,8 @@ const COMMANDS: Record<string, Command> = {
 
 interface TerminalProps {
   onClose: () => void
-  startContactForm?: boolean
+  startContactForm: boolean
+  className?: string
 }
 
 interface TerminalLine {
@@ -185,7 +186,7 @@ interface TerminalLine {
   output?: string | JSX.Element
 }
 
-const Terminal = ({ onClose, startContactForm = false }: TerminalProps) => {
+const Terminal = ({ onClose, startContactForm, className = '' }: TerminalProps) => {
   const [lines, setLines] = useState<TerminalLine[]>([])
   const [currentInput, setCurrentInput] = useState('')
   const [commandHistory, setCommandHistory] = useState<string[]>([])
@@ -402,7 +403,7 @@ const Terminal = ({ onClose, startContactForm = false }: TerminalProps) => {
 
   return (
     <div 
-      className={`fixed bottom-0 left-0 right-0 bg-[#1e1e1e] border-t border-[#2d2d2d] flex flex-col z-50 transition-all duration-200`}
+      className={`${className} fixed bottom-0 left-0 right-0 bg-[#1e1e1e] border-t border-[#2d2d2d] flex flex-col z-50 transition-all duration-200`}
       style={{ 
         height: isMaximized ? 'calc(100vh - 50px)' : `${terminalHeight}px`,
         maxHeight: 'calc(100vh - 50px)'

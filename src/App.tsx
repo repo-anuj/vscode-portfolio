@@ -170,7 +170,7 @@ const App: React.FC = () => {
                   setIsContactMode(false)
                 }} 
                 startContactForm={isContactMode}
-                className="absolute bottom-0 left-0 right-0 h-[280px] bg-vscode-terminal"
+                className="h-[280px]"
               />
             )}
           </div>
