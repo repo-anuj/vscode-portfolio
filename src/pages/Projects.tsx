@@ -2,6 +2,10 @@ import { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { Github, ExternalLink, Code2, Layers } from 'lucide-react'
 import gsap from 'gsap'
+import codeplayers from '../projects/codeplayers.png';
+import festiva from '../projects/festiva.png';
+import linkedin from '../projects/linkedin.png';
+import pacman from '../projects/pacman.png';
 // import '@fontsource/fira-code'
 // import '@fontsource/space-grotesk'
 // import '@fontsource/inter'
@@ -55,30 +59,38 @@ const Projects = () => {
     {
       title: 'Pac-Man Game',
       description: 'A modernized Pac-Man game featuring interactive controls and responsive design. Built with dynamic game logic and smooth animations for an engaging gaming experience.',
-      image: '/projects/pacman.png',
+      image: pacman,
       tags: ['React', 'Tailwind CSS', 'Game Development'],
-      github: 'https://github.com/yourusername/pacman-game',
-      live: 'https://your-pacman-game.com',
+      github: 'https://github.com/repo-anuj/packman-best',
+      live: 'https://packman-best.vercel.app/',
       status: 'completed',
       year: '2024'
     },
     {
       title: 'Codeplayers Website',
       description: 'An engaging website optimized for SEO and performance across all devices. Features smooth animations and dynamic content delivery for an enhanced user experience.',
-      image: '/projects/codeplayers.png',
+      image: codeplayers,
       tags: ['ReactJS', 'Bootstrap', 'Framer Motion', 'SEO'],
-      github: 'https://github.com/yourusername/codeplayers',
-      live: 'https://codeplayers.com',
+      live: 'https://code-x-gules.vercel.app/landing',
       status: 'completed',
       year: '2024'
     },
     {
       title: 'Festiva Website',
       description: 'A responsive event management platform built with modern design principles. Implements real-time updates and dynamic components with advanced Framer Motion animations.',
-      image: '/projects/festiva.png',
+      image: festiva,
       tags: ['Vite', 'ReactJS', 'Framer Motion'],
-      github: 'https://github.com/yourusername/festiva',
-      live: 'https://festiva-events.com',
+      live: 'https://festiva-canva.vercel.app/',
+      status: 'completed',
+      year: '2024'
+    },
+    {
+      title: 'Linkedin Post Generator',
+      description: 'A tool for generating professional-looking LinkedIn posts with ease. Features a user-friendly interface and real-time preview for optimal content distribution.',
+      image: linkedin,
+      tags: ['Vite', 'ReactJS', 'Framer Motion'],
+      github: 'https://github.com/repo-anuj/Linkedin-Post-Generator',
+      live: 'https://linkedin-post-generator-orcin.vercel.app/',
       status: 'completed',
       year: '2024'
     }
@@ -174,16 +186,18 @@ const Projects = () => {
 
                 {/* Links */}
                 <div className="flex gap-4">
-                  <a
-                    href={project.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-white/60 hover:text-vscode-accent
-                      transition-colors duration-300"
-                  >
-                    <Github className="w-4 h-4" />
-                    <span className="text-sm">Code</span>
-                  </a>
+                  {project.github && (
+                    <a
+                      href={project.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 text-white/60 hover:text-vscode-accent
+                        transition-colors duration-300"
+                    >
+                      <Github className="w-4 h-4" />
+                      <span className="text-sm">Code</span>
+                    </a>
+                  )}
                   {project.live && (
                     <a
                       href={project.live}
@@ -248,4 +262,4 @@ const Projects = () => {
   )
 }
 
-export default Projects 
+export default Projects
