@@ -117,7 +117,7 @@ const Home = ({ onContactClick }: HomeProps) => {
               >
                 <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform" />
                 <span className="relative flex items-center gap-2">
-                  Open Terminal
+                  Hire Me
                   <Terminal size={18} />
                 </span>
               </motion.button>
@@ -179,4 +179,4 @@ const Home = ({ onContactClick }: HomeProps) => {
   )
 }
 
-export default Home 
+export default Home

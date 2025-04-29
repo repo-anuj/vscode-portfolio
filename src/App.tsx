@@ -1,12 +1,17 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import Header from './components/Header'
 import Sidebar from './components/Sidebar'
 import StatusBar from './components/StatusBar'
 import FileExplorer from './components/FileExplorer'
 import TabsBar from './components/TabsBar'
 import BugGame from './components/BugGame'
+import MemoryGame from './components/MemoryGame'
 import Terminal from './components/Terminal'
 import Settings from './components/Settings'
+import CommandPalette from './components/CommandPalette'
+import Breadcrumbs from './components/Breadcrumbs'
+import Extensions from './components/Extensions'
+import WelcomeScreen from './components/WelcomeScreen'
 import { FileItem } from './types'
 import { Theme, THEMES } from './components/Settings'
 import Home from './pages/Home'
@@ -17,10 +22,16 @@ import Projects from './pages/Projects'
 import Profile from './pages/Profile'
 import './App.css'
 
-const GAME_TAB = {
+const BUG_GAME_TAB = {
   name: 'Bug Squasher.tsx',
   type: 'file',
   path: '/game/BugSquasher'
+} as const
+
+const MEMORY_GAME_TAB = {
+  name: 'Memory Match.tsx',
+  type: 'file',
+  path: '/game/MemoryMatch'
 } as const
 
 const App: React.FC = () => {
@@ -31,6 +42,42 @@ const App: React.FC = () => {
   const [showSettings, setShowSettings] = useState(false)
   const [currentTheme, setCurrentTheme] = useState<Theme>(THEMES[0])
   const [isExplorerOpen, setIsExplorerOpen] = useState(true)
+  const [showCommandPalette, setShowCommandPalette] = useState(false)
+  const [showExtensions, setShowExtensions] = useState(false)
+  const contentRef = useRef<HTMLDivElement>(null)
+  
+  // Handle keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Command Palette (Ctrl+Shift+P)
+      if (e.ctrlKey && e.shiftKey && e.key === 'P') {
+        e.preventDefault()
+        setShowCommandPalette(true)
+      }
+      
+      // Quick Open (Ctrl+P)
+      if (e.ctrlKey && !e.shiftKey && e.key === 'p') {
+        e.preventDefault()
+        setShowCommandPalette(true)
+      }
+      
+      // Toggle Terminal (Ctrl+`)
+      if (e.ctrlKey && e.key === '`') {
+        e.preventDefault()
+        setShowTerminal(prev => !prev)
+        setIsContactMode(false)
+      }
+      
+      // Toggle Settings (Ctrl+,)
+      if (e.ctrlKey && e.key === ',') {
+        e.preventDefault()
+        setShowSettings(true)
+      }
+    }
+    
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [])
 
   const handleFileClick = (file: FileItem) => {
     if (!openFiles.find(f => f.path === file.path)) {
@@ -40,10 +87,17 @@ const App: React.FC = () => {
   }
 
   const handleBugClick = () => {
-    if (!openFiles.find(f => f.path === GAME_TAB.path)) {
-      setOpenFiles([...openFiles, GAME_TAB])
+    if (!openFiles.find(f => f.path === BUG_GAME_TAB.path)) {
+      setOpenFiles([...openFiles, BUG_GAME_TAB])
     }
-    setActiveFile(GAME_TAB)
+    setActiveFile(BUG_GAME_TAB)
+  }
+  
+  const handleMemoryGameClick = () => {
+    if (!openFiles.find(f => f.path === MEMORY_GAME_TAB.path)) {
+      setOpenFiles([...openFiles, MEMORY_GAME_TAB])
+    }
+    setActiveFile(MEMORY_GAME_TAB)
   }
 
   const handleTerminalClick = () => {
@@ -58,6 +112,14 @@ const App: React.FC = () => {
 
   const handleSettingsClick = () => {
     setShowSettings(true)
+  }
+
+  const handleCommandPaletteClick = () => {
+    setShowCommandPalette(true)
+  }
+
+  const handleExtensionsClick = () => {
+    setShowExtensions(!showExtensions)
   }
 
   const handleThemeChange = (theme: Theme) => {
@@ -96,9 +158,10 @@ const App: React.FC = () => {
 
     if (!activeFile) {
       return (
-        <div className="h-full w-full flex items-center justify-center text-center px-4">
-          <p className="text-white/40 text-sm">Select a file from the explorer to view its content</p>
-        </div>
+        <WelcomeScreen 
+          onFileClick={handleFileClick}
+          onContactClick={handleContactClick}
+        />
       )
     }
 
@@ -117,6 +180,8 @@ const App: React.FC = () => {
         return <Profile />
       case '/game/BugSquasher':
         return <BugGame />
+      case '/game/MemoryMatch':
+        return <MemoryGame />
       default:
         return (
           <div className="p-4">
@@ -142,9 +207,12 @@ const App: React.FC = () => {
         <div className="flex">
           <Sidebar 
             onBugClick={handleBugClick}
+            onMemoryGameClick={handleMemoryGameClick}
             onTerminalClick={handleTerminalClick}
             onContactClick={handleContactClick}
             onSettingsClick={handleSettingsClick}
+            onExtensionsClick={handleExtensionsClick}
+            onCommandPaletteClick={handleCommandPaletteClick}
           />
           <FileExplorer 
             onFileClick={handleFileClick} 
@@ -159,8 +227,12 @@ const App: React.FC = () => {
             onTabClick={handleTabClick}
             onTabClose={handleTabClose}
           />
+          {activeFile && <Breadcrumbs activeFile={activeFile} />}
           <div className="flex-1 relative overflow-hidden">
-            <div className="h-full overflow-y-auto">
+            <div 
+              ref={contentRef}
+              className="h-full overflow-y-auto"
+            >
               {renderContent()}
             </div>
             {showTerminal && (
@@ -175,10 +247,28 @@ const App: React.FC = () => {
             )}
           </div>
         </div>
+        {showExtensions && (
+          <Extensions 
+            isOpen={showExtensions}
+            onClose={() => setShowExtensions(false)}
+          />
+        )}
       </div>
       <StatusBar />
+      
+      {/* Command Palette */}
+      <CommandPalette 
+        isOpen={showCommandPalette}
+        onClose={() => setShowCommandPalette(false)}
+        onFileClick={handleFileClick}
+        onBugClick={handleBugClick}
+        onMemoryGameClick={handleMemoryGameClick}
+        onTerminalClick={handleTerminalClick}
+        onContactClick={handleContactClick}
+        onSettingsClick={handleSettingsClick}
+      />
     </div>
   )
 }
 
-export default App 
+export default App

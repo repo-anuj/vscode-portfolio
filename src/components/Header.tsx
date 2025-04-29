@@ -60,7 +60,7 @@ const Header = ({ onMenuClick, onContactClick }: HeaderProps) => {
           onClick={onContactClick}
           className="hidden sm:block text-sm text-white bg-vscode-accent hover:bg-vscode-accent/80 px-3 py-1 rounded"
         >
-          Contact
+          Hire Me
         </button>
         <button
           onClick={onMenuClick}
