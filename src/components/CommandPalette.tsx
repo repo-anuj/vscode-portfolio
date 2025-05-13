@@ -90,16 +90,6 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({
       },
       category: 'Navigation'
     },
-    {
-      id: 'profile',
-      name: 'Go to Profile',
-      icon: <FileText size={16} />,
-      action: () => {
-        onFileClick({ name: 'Profile.tsx', type: 'file', path: '/pages/Profile' })
-        onClose()
-      },
-      category: 'Navigation'
-    },
     
     // Feature commands
     {
