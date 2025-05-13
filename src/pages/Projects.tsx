@@ -1,11 +1,15 @@
 import { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { Github, ExternalLink, Code2, Layers } from 'lucide-react'
+import { ExternalLink, Code2, Layers } from 'lucide-react'
 import gsap from 'gsap'
 import codeplayers from '../projects/codeplayers.png';
 import festiva from '../projects/festiva.png';
 import linkedin from '../projects/linkedin.png';
 import pacman from '../projects/pacman.png';
+import rentRideRepeat from '../projects/rentRideRepeat.png';
+import portfolioGenerator from '../projects/portfolioGen.png';
+import losser from '../projects/losser.png';
+import erp from '../projects/ERP-AI.jpg';
 // import '@fontsource/fira-code'
 // import '@fontsource/space-grotesk'
 // import '@fontsource/inter'
@@ -17,9 +21,9 @@ const Projects = () => {
     const ctx = gsap.context(() => {
       // Animate project cards on scroll
       gsap.fromTo('.project-card',
-        { 
+        {
           y: 50,
-          opacity: 0 
+          opacity: 0
         },
         {
           y: 0,
@@ -56,6 +60,45 @@ const Projects = () => {
   }, [])
 
   const projects = [
+    {
+      title: 'ERP-AI System',
+      description: 'A scalable ERP system with role-based access and dynamic dashboards for comprehensive business management. Built with modern web technologies for optimal performance.',
+      image: erp,
+      tags: ['Next.js', 'TypeScript', 'Prisma', 'MongoDB'],
+      github: 'https://github.com/repo-anuj/ERP-AI',
+      status: 'in-progress',
+      year: '2025'
+    },
+    {
+      title: 'LOSSER Portfolio',
+      description: 'A modern portfolio website showcasing projects and professional experience. Features clean design, responsive layout, and smooth animations for an optimal user experience.',
+      image: losser,
+      tags: ['Next.js', 'TypeScript', 'Tailwind CSS'],
+      github: 'https://github.com/repo-anuj/LOSSER',
+      live: 'https://losser.vercel.app',
+      status: 'completed',
+      year: '2025'
+    },
+    {
+      title: 'RentRideRepeat',
+      description: 'A responsive vehicle rental platform with booking system, user management, and payment integration. Optimized for all devices with intuitive navigation.',
+      image:  rentRideRepeat,
+      tags: ['React', 'Next.js', 'Tailwind CSS'],
+      github: 'https://github.com/repo-anuj/rentriderepeat-website',
+      live: 'https://rentriderepeat-website.vercel.app/',
+      status: 'completed',
+      year: '2025'
+    },
+    {
+      title: 'Portfolio Generator',
+      description: 'Dynamic tool for real-time portfolio generation with user authentication and templating. Allows users to create professional portfolios with minimal effort.',
+      image: portfolioGenerator,
+      tags: ['React', 'Tailwind CSS', 'Firebase'],
+      github: 'https://github.com/repo-anuj/portfolio-generator',
+      live: 'https://portfolio-generator-nine.vercel.app/',
+      status: 'completed',
+      year: '2025'
+    },
     {
       title: 'Pac-Man Game',
       description: 'A modernized Pac-Man game featuring interactive controls and responsive design. Built with dynamic game logic and smooth animations for an engaging gaming experience.',
@@ -118,14 +161,14 @@ const Projects = () => {
             Featured Projects
           </h1>
           <p className="text-white/60 font-['Inter'] max-w-2xl mx-auto">
-            A collection of my recent work, showcasing web development and interactive experiences.
+            A showcase of my diverse portfolio spanning enterprise solutions, interactive web applications, and creative user experiences.
           </p>
         </motion.div>
 
         {/* Decorative Elements */}
         <div className="absolute inset-0 pointer-events-none">
           {[Code2, Layers].map((Icon, index) => (
-            <Icon 
+            <Icon
               key={index}
               className={`floating-icon absolute text-vscode-accent/20 w-16 h-16
                 ${index % 2 ? 'left-[10%]' : 'right-[10%]'}
@@ -145,11 +188,17 @@ const Projects = () => {
               {/* Project Image */}
               <div className="relative h-48 overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/50" />
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
-                />
+                {typeof project.image === 'string' ? (
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                  />
+                ) : (
+                  <div className="w-full h-full transform group-hover:scale-110 transition-transform duration-500">
+                    {project.image}
+                  </div>
+                )}
                 {/* Year Badge */}
                 <span className="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-medium
                   bg-vscode-accent/90 text-white">
@@ -193,7 +242,10 @@ const Projects = () => {
                     className="flex items-center gap-2 text-white/60 hover:text-vscode-accent
                       transition-colors duration-300"
                   >
-                    <Github className="w-4 h-4" />
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+                      <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path>
+                      <path d="M9 18c-4.51 2-5-2-7-2"></path>
+                    </svg>
                     <span className="text-sm">Code</span>
                   </a>
                   {project.live && (
@@ -227,16 +279,16 @@ const Projects = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
               {
-                title: 'Portfolio 2.0',
-                description: 'An enhanced version of this portfolio with more interactive features and animations.'
+                title: 'WebRTC Video Conferencing',
+                description: 'A peer-to-peer video conferencing application using WebRTC for direct browser-to-browser communication without servers.'
               },
               {
-                title: 'Full-Stack Blog',
-                description: 'A modern blogging platform with authentication and rich text editing.'
+                title: 'WebAssembly Image Editor',
+                description: 'High-performance image processing tool built with Rust and compiled to WebAssembly for near-native speed in the browser.'
               },
               {
-                title: 'Weather Dashboard',
-                description: 'Real-time weather tracking with interactive maps and forecasts.'
+                title: 'WebSocket Collaborative Whiteboard',
+                description: 'Real-time collaborative drawing application using WebSockets for instant synchronization across multiple users.'
               }
             ].map((idea) => (
               <motion.div
