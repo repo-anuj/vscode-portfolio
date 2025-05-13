@@ -1,4 +1,4 @@
-import { Bug, Terminal, Mail, Settings, Files, Search, GitBranch, Package, Command, Grid } from 'lucide-react'
+import { Bug, Terminal, Mail, Settings, Files, Package, Command, Grid } from 'lucide-react'
 import { useState } from 'react'
 
 interface SidebarProps {
@@ -12,11 +12,11 @@ interface SidebarProps {
   activeView?: string
 }
 
-const Sidebar = ({ 
-  onBugClick, 
+const Sidebar = ({
+  onBugClick,
   onMemoryGameClick,
-  onTerminalClick, 
-  onContactClick, 
+  onTerminalClick,
+  onContactClick,
   onSettingsClick,
   onExtensionsClick,
   onCommandPaletteClick,
@@ -42,34 +42,6 @@ const Sidebar = ({
         >
           <Files size={24} />
           {activeIcon === 'explorer' && (
-            <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-white"></div>
-          )}
-        </button>
-
-        {/* Search */}
-        <button
-          className={`w-12 h-12 flex items-center justify-center hover:text-white transition-colors relative ${
-            activeIcon === 'search' ? 'text-white' : 'text-white/40'
-          }`}
-          onClick={() => handleIconClick('search')}
-          title="Search"
-        >
-          <Search size={24} />
-          {activeIcon === 'search' && (
-            <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-white"></div>
-          )}
-        </button>
-
-        {/* Git */}
-        <button
-          className={`w-12 h-12 flex items-center justify-center hover:text-white transition-colors relative ${
-            activeIcon === 'git' ? 'text-white' : 'text-white/40'
-          }`}
-          onClick={() => handleIconClick('git')}
-          title="Source Control"
-        >
-          <GitBranch size={24} />
-          {activeIcon === 'git' && (
             <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-white"></div>
           )}
         </button>

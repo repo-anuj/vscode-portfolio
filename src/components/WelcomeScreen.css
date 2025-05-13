@@ -1,0 +1,62 @@
+/* WelcomeScreen.css */
+
+/* Hide scrollbar but keep functionality */
+.welcome-screen-container {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.welcome-screen-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .welcome-screen-header h1 {
+    font-size: 2rem;
+  }
+  
+  .welcome-screen-header p {
+    font-size: 1.25rem;
+  }
+  
+  .welcome-screen-recent-path {
+    display: none;
+  }
+}
+
+/* Floating animation for walkthrough cards */
+.walkthrough-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.walkthrough-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Progress bar animation */
+.progress-bar-fill {
+  transition: width 0.5s ease-out;
+}
+
+/* Button hover effects */
+.welcome-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.welcome-button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.05);
+  transition: width 0.3s ease;
+}
+
+.welcome-button:hover::after {
+  width: 100%;
+}
