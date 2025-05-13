@@ -732,7 +732,7 @@ const Terminal = ({ onClose, startContactForm, className = '' }: TerminalProps) 
 
   // Initialize EmailJS
   useEffect(() => {
-    emailjs.init("kC1Y4Wukw4BWOvG1K")
+    emailjs.init(import.meta.env.VITE_EMAILJS_PUBLIC_KEY)
   }, [])
 
   // Use resize variables
@@ -824,8 +824,8 @@ const Terminal = ({ onClose, startContactForm, className = '' }: TerminalProps) 
 
     try {
       await emailjs.send(
-        "service_cc300wk",
-        "template_kahi2om",
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
         {
           from_name: name,
           from_email: email,
