@@ -69,7 +69,7 @@ const Projects = () => {
     {
       title: 'Codeplayers Website',
       description: 'An engaging website optimized for SEO and performance across all devices. Features smooth animations and dynamic content delivery for an enhanced user experience.',
-      image: '../projects/codeplayers.png',
+      image: codeplayers,
       tags: ['ReactJS', 'Bootstrap', 'Framer Motion', 'SEO'],
       live: 'https://code-x-gules.vercel.app/landing',
       status: 'completed',
@@ -78,7 +78,7 @@ const Projects = () => {
     {
       title: 'Festiva Website',
       description: 'A responsive event management platform built with modern design principles. Implements real-time updates and dynamic components with advanced Framer Motion animations.',
-      image: '../projects/festiva.png',
+      image: festiva,
       tags: ['Vite', 'ReactJS', 'Framer Motion'],
       live: 'https://festiva-canva.vercel.app/',
       status: 'completed',
@@ -87,7 +87,7 @@ const Projects = () => {
     {
       title: 'Linkedin Post Generator',
       description: 'A tool for generating professional-looking LinkedIn posts with ease. Features a user-friendly interface and real-time preview for optimal content distribution.',
-      image: '../projects/linkedin.png',
+      image: linkedin,
       tags: ['Vite', 'ReactJS', 'Framer Motion'],
       github: 'https://github.com/repo-anuj/Linkedin-Post-Generator',
       live: 'https://linkedin-post-generator-orcin.vercel.app/',

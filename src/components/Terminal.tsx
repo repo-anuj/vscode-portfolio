@@ -1,23 +1,17 @@
-import { useState, useRef, useEffect, useCallback } from 'react'
-import { 
-  Terminal as TerminalIcon, 
-  X, 
-  Minus, 
-  Square, 
-  Maximize2, 
-  Copy, 
-  Check, 
-  Palette, 
+import { useState, useRef, useEffect } from 'react'
+import {
+  Terminal as TerminalIcon,
+  X,
+  Minus,
+  Square,
+  Maximize2,
   Download,
-  Coffee,
-  Lightbulb,
-  Github,
-  Linkedin,
   Mail,
   FileText,
-  Code,
   Folder
 } from 'lucide-react'
+import { GitHubIcon } from './icons/GitHubIcon'
+import { LinkedInIcon } from './icons/LinkedInIcon'
 import emailjs from '@emailjs/browser'
 
 interface Command {
@@ -244,7 +238,7 @@ const COMMANDS: Record<string, Command> = {
     command: 'help',
     description: 'List all available commands',
     usage: 'help [command]',
-    action: (args, terminal) => {
+    action: (args, _terminal) => {
       if (args.length > 0) {
         const cmdName = args[0].toLowerCase()
         const cmd = COMMANDS[cmdName]
@@ -265,7 +259,7 @@ const COMMANDS: Record<string, Command> = {
           return `Command not found: ${cmdName}`
         }
       }
-      
+
       return (
         <div className="text-white/80">
           <p className="mb-2">Available commands:</p>
@@ -336,7 +330,7 @@ const COMMANDS: Record<string, Command> = {
       const temp = Math.floor(Math.random() * 30) + 10
       const condition = conditions[Math.floor(Math.random() * conditions.length)]
       const humidity = Math.floor(Math.random() * 50) + 30
-      
+
       return (
         <div className="space-y-1">
           <div className="font-bold">Weather for {city}:</div>
@@ -355,7 +349,7 @@ const COMMANDS: Record<string, Command> = {
       window.open('https://github.com/repo-anuj', '_blank')
       return (
         <div className="flex items-center gap-2">
-          <Github size={16} className="text-white" />
+          <GitHubIcon size={16} className="text-white" />
           <span>Opening GitHub profile in a new tab...</span>
         </div>
       )
@@ -368,7 +362,7 @@ const COMMANDS: Record<string, Command> = {
       window.open('https://linkedin.com/in/anuj-dubey', '_blank')
       return (
         <div className="flex items-center gap-2">
-          <Linkedin size={16} className="text-blue-500" />
+          <LinkedInIcon size={16} className="text-blue-500" />
           <span>Opening LinkedIn profile in a new tab...</span>
         </div>
       )
@@ -382,7 +376,7 @@ const COMMANDS: Record<string, Command> = {
         <div className="font-mono text-green-500 animate-pulse">
           {Array.from({ length: 8 }, (_, i) => (
             <div key={i} className="opacity-80">
-              {Array.from({ length: 60 }, () => 
+              {Array.from({ length: 60 }, () =>
                 String.fromCharCode(Math.floor(Math.random() * 94) + 33)
               ).join('')}
             </div>
@@ -432,11 +426,11 @@ const COMMANDS: Record<string, Command> = {
       // Get current directory path
       const currentPath = terminal.getCurrentDirectory()
       const targetPath = args.length > 0 ? args[0] : currentPath
-      
+
       // Navigate to the target directory in our file system
       const fs = terminal.getFileSystem()
       let currentDir = fs
-      
+
       // If we're not at root, navigate to the current directory
       if (targetPath !== '~') {
         const pathParts = targetPath.split('/').filter(Boolean)
@@ -451,15 +445,15 @@ const COMMANDS: Record<string, Command> = {
           currentDir = currentDir.children[part]
         }
       }
-      
+
       if (currentDir.type !== 'directory') {
         return `ls: cannot list '${targetPath}': Not a directory`
       }
-      
+
       if (!currentDir.children || Object.keys(currentDir.children).length === 0) {
         return 'Directory is empty'
       }
-      
+
       return (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
           {Object.values(currentDir.children || {}).map(item => (
@@ -487,7 +481,7 @@ const COMMANDS: Record<string, Command> = {
         terminal.changeDirectory('~')
         return 'Changed to home directory'
       }
-      
+
       const targetDir = args[0]
       terminal.changeDirectory(targetDir)
       return `Changed directory to ${terminal.getCurrentDirectory()}`
@@ -501,11 +495,11 @@ const COMMANDS: Record<string, Command> = {
       if (args.length === 0) {
         return 'Usage: cat <file>'
       }
-      
+
       const fileName = args[0]
       const fs = terminal.getFileSystem()
       const currentPath = terminal.getCurrentDirectory().split('/').filter(Boolean)
-      
+
       let currentDir = fs
       for (const part of currentPath) {
         if (!currentDir.children || !currentDir.children[part]) {
@@ -513,16 +507,16 @@ const COMMANDS: Record<string, Command> = {
         }
         currentDir = currentDir.children[part]
       }
-      
+
       if (!currentDir.children || !currentDir.children[fileName]) {
         return `cat: ${fileName}: No such file or directory`
       }
-      
+
       const file = currentDir.children[fileName]
       if (file.type !== 'file') {
         return `cat: ${fileName}: Is a directory`
       }
-      
+
       return (
         <div className="whitespace-pre-wrap bg-black/20 p-2 rounded">
           {file.content}
@@ -541,13 +535,13 @@ const COMMANDS: Record<string, Command> = {
             <div>Available themes:</div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {TERMINAL_THEMES.map(theme => (
-                <div 
+                <div
                   key={theme.id}
                   className="flex items-center gap-2 p-2 rounded cursor-pointer hover:bg-white/10"
                   onClick={() => terminal.setTheme(theme)}
                 >
-                  <div 
-                    className="w-4 h-4 rounded-full" 
+                  <div
+                    className="w-4 h-4 rounded-full"
                     style={{ backgroundColor: theme.accent }}
                   />
                   <span>{theme.name}</span>
@@ -558,14 +552,14 @@ const COMMANDS: Record<string, Command> = {
           </div>
         )
       }
-      
+
       const themeName = args[0].toLowerCase()
       const theme = TERMINAL_THEMES.find(t => t.id === themeName)
-      
+
       if (!theme) {
         return `Theme '${themeName}' not found. Use 'theme' to see available themes.`
       }
-      
+
       terminal.setTheme(theme)
       return `Applied theme: ${theme.name}`
     }
@@ -583,7 +577,7 @@ const COMMANDS: Record<string, Command> = {
       if (history.length === 0) {
         return 'No commands in history'
       }
-      
+
       return (
         <div className="space-y-1">
           {history.map((cmd, i) => (
@@ -604,15 +598,15 @@ const COMMANDS: Record<string, Command> = {
         <div className="space-y-3">
           <div className="text-lg font-bold">Anuj Dubey - Resume</div>
           <div className="flex gap-4">
-            <button 
+            <button
               onClick={() => window.open('/Anuj_Dubey_Resume.pdf', '_blank')}
               className="flex items-center gap-2 px-3 py-2 bg-vscode-accent/20 hover:bg-vscode-accent/30 rounded-md transition-colors"
             >
               <FileText size={16} />
               <span>View Resume</span>
             </button>
-            <a 
-              href="/Anuj_Dubey_Resume.pdf" 
+            <a
+              href="/Anuj_Dubey_Resume.pdf"
               download
               className="flex items-center gap-2 px-3 py-2 bg-vscode-accent/20 hover:bg-vscode-accent/30 rounded-md transition-colors"
             >
@@ -656,25 +650,25 @@ const COMMANDS: Record<string, Command> = {
         <div className="space-y-3">
           <div className="text-lg font-bold">Connect with me</div>
           <div className="flex flex-wrap gap-3">
-            <a 
-              href="https://github.com/repo-anuj" 
-              target="_blank" 
+            <a
+              href="https://github.com/repo-anuj"
+              target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-3 py-2 bg-[#24292e]/80 hover:bg-[#24292e] text-white rounded-md transition-colors"
             >
-              <Github size={16} />
+              <GitHubIcon size={16} />
               <span>GitHub</span>
             </a>
-            <a 
-              href="https://linkedin.com/in/anuj-dubey" 
-              target="_blank" 
+            <a
+              href="https://linkedin.com/in/anuj-dubey"
+              target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-3 py-2 bg-[#0077b5]/80 hover:bg-[#0077b5] text-white rounded-md transition-colors"
             >
-              <Linkedin size={16} />
+              <LinkedInIcon size={16} />
               <span>LinkedIn</span>
             </a>
-            <button 
+            <button
               onClick={() => {
                 navigator.clipboard.writeText('anuj.dubey@example.com')
                   .then(() => alert('Email copied to clipboard!'))
@@ -715,7 +709,7 @@ const Terminal = ({ onClose, startContactForm, className = '' }: TerminalProps) 
   const [terminalHeight, setTerminalHeight] = useState(300)
   const [startDragY, setStartDragY] = useState(0)
   const [startHeight, setStartHeight] = useState(0)
-  
+
   // Contact form state
   const [contactForm, setContactForm] = useState<ContactFormState>({
     step: startContactForm ? 1 : 0,
@@ -724,22 +718,17 @@ const Terminal = ({ onClose, startContactForm, className = '' }: TerminalProps) 
     message: ''
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
-  
+
   // File system and theme state
   const [fileSystem] = useState<FileSystemItem>(createFileSystem())
   const [currentDirectory, setCurrentDirectory] = useState<string>('~/portfolio')
-  const [currentTheme, setCurrentTheme] = useState<TerminalTheme>(TERMINAL_THEMES[0])
-  const [showCopyButton, setShowCopyButton] = useState(false)
-  const [isCopied, setIsCopied] = useState(false)
-  const [suggestions, setSuggestions] = useState<string[]>([])
-  const [showSuggestions, setShowSuggestions] = useState(false)
-  
+  const setCurrentTheme = useState<TerminalTheme>(TERMINAL_THEMES[0])[1]
+
   // Refs
   const terminalRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const resizeRef = useRef<HTMLDivElement>(null)
   const isDraggingRef = useRef(false)
-  const outputRef = useRef<HTMLDivElement>(null)
 
   // Initialize EmailJS
   useEffect(() => {
@@ -777,7 +766,7 @@ const Terminal = ({ onClose, startContactForm, className = '' }: TerminalProps) 
 
   const handleContactForm = (input: string) => {
     let output: string | JSX.Element = ''
-    
+
     switch (contactForm.step) {
       case 1: // Name entered
         if (input.trim().length < 2) {
@@ -847,7 +836,7 @@ const Terminal = ({ onClose, startContactForm, className = '' }: TerminalProps) 
         }
       )
 
-      setLines(prev => [...prev, { 
+      setLines(prev => [...prev, {
         output: (
           <div className="space-y-2">
             <p className="text-green-400">✨ Thank you for your message! Here's a summary:</p>
@@ -861,10 +850,10 @@ const Terminal = ({ onClose, startContactForm, className = '' }: TerminalProps) 
         )
       }])
       setContactForm({ step: 0, name: '', email: '', message: '' })
-      
+
     } catch (error) {
       console.error('Email sending failed:', error)
-      setLines(prev => [...prev, { 
+      setLines(prev => [...prev, {
         output: 'Failed to send message. Please try again or contact me directly at 00a20.j50@email.com'
       }])
     } finally {
@@ -892,7 +881,7 @@ const Terminal = ({ onClose, startContactForm, className = '' }: TerminalProps) 
         setCurrentDirectory('~/portfolio')
         return
       }
-      
+
       if (path === '..') {
         // Go up one level
         const parts = currentDirectory.split('/')
@@ -902,13 +891,13 @@ const Terminal = ({ onClose, startContactForm, className = '' }: TerminalProps) 
         }
         return
       }
-      
+
       // Handle absolute paths
       if (path.startsWith('~/')) {
         setCurrentDirectory(path)
         return
       }
-      
+
       // Handle relative paths
       setCurrentDirectory(`${currentDirectory}/${path}`.replace(/\/+/g, '/'))
     },
@@ -920,22 +909,7 @@ const Terminal = ({ onClose, startContactForm, className = '' }: TerminalProps) 
     }
   }
 
-  // Copy terminal output to clipboard
-  const copyToClipboard = () => {
-    if (!terminalRef.current) return
-    
-    const text = Array.from(terminalRef.current.querySelectorAll('.select-text'))
-      .map(el => el.textContent)
-      .join('\n')
-      .trim()
-    
-    navigator.clipboard.writeText(text)
-      .then(() => {
-        setIsCopied(true)
-        setTimeout(() => setIsCopied(false), 2000)
-      })
-      .catch(err => console.error('Failed to copy: ', err))
-  }
+  // Terminal output handling functions can be added here when needed
 
   // Handle command execution
   const handleCommand = (input: string) => {
@@ -949,12 +923,12 @@ const Terminal = ({ onClose, startContactForm, className = '' }: TerminalProps) 
 
     const args = input.trim().split(' ')
     const commandName = args[0].toLowerCase()
-    
+
     // Check for aliases
-    let foundCommand = COMMANDS[commandName]
+    let foundCommand: Command | undefined = COMMANDS[commandName]
     if (!foundCommand) {
       // Look for command by alias
-      foundCommand = Object.values(COMMANDS).find(cmd => 
+      foundCommand = Object.values(COMMANDS).find(cmd =>
         cmd.aliases?.includes(commandName)
       )
     }
@@ -962,12 +936,12 @@ const Terminal = ({ onClose, startContactForm, className = '' }: TerminalProps) 
     let output: string | JSX.Element
     if (foundCommand) {
       output = foundCommand.action(args.slice(1), terminalController)
-      
+
       // Handle special commands
       if (foundCommand.command === 'contact') {
         setContactForm(prev => ({ ...prev, step: 1 }))
       }
-      
+
       // Handle clear command
       if (foundCommand.command === 'clear') {
         terminalController.clearLines()
@@ -1016,9 +990,9 @@ const Terminal = ({ onClose, startContactForm, className = '' }: TerminalProps) 
   }
 
   return (
-    <div 
+    <div
       className={`${className} fixed bottom-0 left-0 right-0 bg-[#1e1e1e] border-t border-[#2d2d2d] flex flex-col z-50 transition-all duration-200`}
-      style={{ 
+      style={{
         height: isMaximized ? 'calc(100vh - 50px)' : `${terminalHeight}px`,
         maxHeight: 'calc(100vh - 50px)'
       }}

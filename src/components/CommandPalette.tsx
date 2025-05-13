@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Search, FileText, Bug, Terminal, Mail, Settings, X, Command, Package, Zap, Grid } from 'lucide-react'
+import { FileText, Bug, Terminal, Mail, Settings, X, Command, Package, Zap, Grid } from 'lucide-react'
 import { FileItem } from '../types'
 
 interface CommandPaletteProps {
@@ -285,7 +285,7 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({
                   </div>
                   {filteredCommands
                     .filter(cmd => cmd.category === category)
-                    .map((command, index) => {
+                    .map((command) => {
                       const commandIndex = filteredCommands.findIndex(c => c.id === command.id)
                       const isSelected = commandIndex === selectedIndex
                       

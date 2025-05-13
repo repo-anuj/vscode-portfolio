@@ -7,13 +7,12 @@ import {
   Terminal,
   Star,
   Lightbulb,
-  Github,
   ExternalLink,
   Mail,
   Download,
-  GraduationCap,
-  Award
+  GraduationCap
 } from 'lucide-react'
+import { GitHubIcon } from './icons/GitHubIcon'
 import './WelcomeScreen.css'
 
 interface WelcomeScreenProps {
@@ -189,7 +188,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onFileClick, onContactCli
                     rel="noopener noreferrer"
                     className="w-full text-left px-3 py-2 rounded flex items-center text-[#0098ff] hover:bg-[#2a2d2e] transition-colors welcome-button"
                   >
-                    <Github size={16} className="mr-3" />
+                    <GitHubIcon size={16} className="mr-3" />
                     <span>GitHub</span>
                     <ExternalLink size={12} className="ml-2 text-white/40" />
                   </a>
