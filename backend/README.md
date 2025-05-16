@@ -124,7 +124,38 @@ The server also supports real-time communication via WebSockets.
 
 ## Deployment
 
-### Vercel
+### Render (Recommended for WebSocket Support)
+
+1. Create a [Render](https://render.com/) account
+
+2. From your Render dashboard, click "New" and select "Web Service"
+
+3. Connect your GitHub repository or use the "Deploy from Git Repository" option
+
+4. Configure your web service:
+   - **Name**: `portfolio-backend` (or your preferred name)
+   - **Region**: Choose a region close to your target audience
+   - **Branch**: `main` (or your default branch)
+   - **Runtime**: `Node`
+   - **Build Command**: `npm install`
+   - **Start Command**: `npm start`
+   - **Plan**: Free (or select a paid plan for production)
+
+5. Add environment variables:
+   - `NODE_ENV`: `production`
+   - `MONGODB_URI`: Your MongoDB Atlas connection string
+   - `WEBSOCKET_ORIGINS`: Your frontend URL(s), comma-separated (e.g., `https://your-portfolio.vercel.app,http://localhost:5173`)
+
+6. Click "Create Web Service"
+
+7. Once deployed, Render will provide a URL for your backend (e.g., `https://portfolio-backend.onrender.com`)
+
+8. Update your frontend's `.env` file with this URL:
+   ```
+   VITE_BACKEND_URL=https://portfolio-backend.onrender.com
+   ```
+
+### Vercel (Alternative, but WebSockets Not Supported)
 
 1. Install Vercel CLI:
 
@@ -139,6 +170,8 @@ vercel
 ```
 
 3. Set environment variables in the Vercel dashboard.
+
+> **Note**: Vercel's serverless functions don't support WebSockets. If you deploy to Vercel, your application will fall back to HTTP requests, losing real-time functionality.
 
 ### MongoDB Atlas Setup
 

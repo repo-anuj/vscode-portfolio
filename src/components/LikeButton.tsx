@@ -32,44 +32,84 @@ const LikeButton: React.FC<LikeButtonProps> = ({ className = '' }) => {
   const [socketConnected, setSocketConnected] = useState<boolean>(false);
   const socketRef = useRef<Socket | null>(null);
 
-  // Setup WebSocket connection
+  // Setup WebSocket connection with improved reconnection logic
   useEffect(() => {
-    // Initialize socket connection
-    const socket = io(API_URL);
-    socketRef.current = socket;
+    let reconnectTimer: NodeJS.Timeout;
+    let pingInterval: NodeJS.Timeout;
 
-    // Handle connection events
-    socket.on('connect', () => {
-      console.log('WebSocket connected');
-      setSocketConnected(true);
-    });
+    const connectSocket = () => {
+      // Initialize socket connection with better options for Render
+      const socket = io(API_URL, {
+        reconnectionAttempts: 5,
+        reconnectionDelay: 1000,
+        timeout: 10000,
+        transports: ['websocket', 'polling'] // Try WebSocket first, fall back to polling
+      });
+      socketRef.current = socket;
 
-    socket.on('connect_error', (err) => {
-      console.error('WebSocket connection error:', err);
-      setSocketConnected(false);
-      // Fall back to HTTP if WebSocket fails
-      fetchLikesHttp();
-    });
+      // Handle connection events
+      socket.on('connect', () => {
+        console.log('WebSocket connected');
+        setSocketConnected(true);
 
-    // Handle initial likes count
-    socket.on('initial-likes', (data) => {
-      console.log('Received initial likes:', data);
-      setLikes(data.count);
-      setIsLoading(false);
-    });
+        // Set up ping interval to keep connection alive (especially important for Render)
+        pingInterval = setInterval(() => {
+          socket.emit('ping', (response: any) => {
+            console.log('Ping response:', response);
+          });
+        }, 30000); // Ping every 30 seconds
+      });
 
-    // Handle real-time like updates
-    socket.on('like-update', (data) => {
-      console.log('Received like update:', data);
-      setLikes(data.count);
-    });
+      socket.on('disconnect', (reason) => {
+        console.log(`WebSocket disconnected: ${reason}`);
+        setSocketConnected(false);
+        clearInterval(pingInterval);
 
-    // Clean up socket connection on unmount
+        // Attempt to reconnect if disconnected unexpectedly
+        if (reason === 'io server disconnect' || reason === 'transport close') {
+          reconnectTimer = setTimeout(connectSocket, 3000);
+        }
+      });
+
+      socket.on('connect_error', (err) => {
+        console.error('WebSocket connection error:', err);
+        setSocketConnected(false);
+        // Fall back to HTTP if WebSocket fails
+        fetchLikesHttp();
+
+        // Try to reconnect after a delay
+        reconnectTimer = setTimeout(connectSocket, 5000);
+      });
+
+      // Handle initial likes count
+      socket.on('initial-likes', (data) => {
+        console.log('Received initial likes:', data);
+        if (data.error) {
+          console.warn('Error in initial likes data, using fallback value');
+          fetchLikesHttp();
+        } else {
+          setLikes(data.count);
+          setIsLoading(false);
+        }
+      });
+
+      // Handle real-time like updates
+      socket.on('like-update', (data) => {
+        console.log('Received like update:', data);
+        setLikes(data.count);
+      });
+    };
+
+    connectSocket();
+
+    // Clean up socket connection and timers on unmount
     return () => {
-      if (socket) {
+      if (socketRef.current) {
         console.log('Disconnecting WebSocket');
-        socket.disconnect();
+        socketRef.current.disconnect();
       }
+      clearTimeout(reconnectTimer);
+      clearInterval(pingInterval);
     };
   }, []);
 

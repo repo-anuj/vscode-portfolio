@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: portfolio-backend
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: WEBSOCKET_ORIGINS
+        sync: false
+    plan: free
