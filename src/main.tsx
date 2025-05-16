@@ -1,7 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Analytics } from '@vercel/analytics/react'
-import { GTProvider } from 'gt-react'
 import './index.css'
 import './styles/responsive.css'
 import App from './App.tsx'
@@ -10,7 +9,7 @@ import { LanguageProvider } from './contexts/LanguageContext'
 import ErrorBoundary from './components/ErrorBoundary'
 import { initFontLoading } from './utils/fontLoader'
 import { initThemeLoading } from './utils/themeLoader'
-import { getGTConfig } from './utils/gtConfig'
+import GTWrapper from './components/GTWrapper'
 
 // Initialize font loading
 initFontLoading()
@@ -23,10 +22,10 @@ createRoot(document.getElementById('root')!).render(
     <ErrorBoundary>
       <ThemeProvider>
         <LanguageProvider>
-          <GTProvider {...getGTConfig()}>
+          <GTWrapper>
             <App />
             <Analytics />
-          </GTProvider>
+          </GTWrapper>
         </LanguageProvider>
       </ThemeProvider>
     </ErrorBoundary>

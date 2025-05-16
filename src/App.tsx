@@ -48,7 +48,8 @@ import { lazyImport } from './utils/lazyImport';
  * preloading of components. This improves initial load time while allowing
  * for preloading components when they're likely to be needed.
  */
-import { T, Var } from "gt-react";
+// Import safe GT components
+import useSafeGT from './hooks/useSafeGT';
 
 const { Component: Settings } = lazyImport(() => import('./components/Settings'));
 const { Component: BugGame, preload: preloadBugGame } = lazyImport(() => import('./components/BugGame'));
@@ -68,6 +69,8 @@ const { Component: Profile, preload: preloadProfile } = lazyImport(() => import(
 const App: React.FC = () => {
   // Theme context for applying the current theme
   const { currentTheme } = useTheme();
+  // Use safe GT components
+  const { T, Var } = useSafeGT();
 
   // State for managing files, tabs, and UI components
   const [openFiles, setOpenFiles] = useState<FileItem[]>([]); // Currently open files/tabs
