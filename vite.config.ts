@@ -22,7 +22,7 @@ export default defineConfig(({ mode }) => {
       // Optimize chunk size
       chunkSizeWarningLimit: 1000,
 
-      // Minify output
+      // Minify output with terser (now installed as a dependency)
       minify: 'terser',
 
       // Terser options
