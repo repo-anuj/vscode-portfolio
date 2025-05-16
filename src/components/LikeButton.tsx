@@ -1,20 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Heart } from 'lucide-react';
-import { useGT } from "gt-react";
-
-// Lazy import socket.io-client to prevent it from blocking rendering
-// This helps prevent white screen issues if socket.io fails to load
-let io: any;
-try {
-  // We'll import this dynamically to prevent it from blocking the app
-  import('socket.io-client').then(module => {
-    io = module.io;
-  }).catch(err => {
-    console.error('Failed to load socket.io-client:', err);
-  });
-} catch (error) {
-  console.error('Error importing socket.io-client:', error);
-}
+import { io, Socket } from 'socket.io-client';
+import { T } from "gt-react";
 
 // API URL - Always use environment variable if available, regardless of environment
 // Add VITE_BACKEND_URL to your .env file (e.g., VITE_BACKEND_URL=https://your-api-domain.com)
@@ -23,8 +10,12 @@ const API_URL = import.meta.env.VITE_BACKEND_URL ||
     ? 'https://vscode-portfolio-x55n.onrender.com'
     : 'http://localhost:3001');
 
+// Create WebSocket URL with explicit protocol
+const WS_URL = API_URL.replace(/^http/, 'ws').replace(/^https/, 'wss');
+
 // Log the backend URL for debugging
 console.log('Using backend URL:', API_URL);
+console.log('Using WebSocket URL:', WS_URL);
 console.log('Environment variables available:', {
   VITE_BACKEND_URL: import.meta.env.VITE_BACKEND_URL || 'not set',
   NODE_ENV: process.env.NODE_ENV || 'not set'
@@ -38,17 +29,12 @@ interface LikeButtonProps {
   className?: string;
 }
 
-// Define a type for the socket to avoid TypeScript errors
-interface SocketType {
-  on: (event: string, callback: (...args: any[]) => void) => void;
-  emit: (event: string, ...args: any[]) => void;
-  disconnect: () => void;
-  connected: boolean;
-}
-
 /**
  * LikeButton component that allows users to like the portfolio
  * Uses IP address to track unique likes without authentication
+ *
+ * @param {LikeButtonProps} props - Component props
+ * @returns {JSX.Element} Rendered LikeButton component
  */
 const LikeButton: React.FC<LikeButtonProps> = ({ className = '' }) => {
   const [likes, setLikes] = useState<number>(0);
@@ -56,8 +42,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ className = '' }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [socketConnected, setSocketConnected] = useState<boolean>(false);
-  const socketRef = useRef<SocketType | null>(null);
-  const t = useGT();
+  const socketRef = useRef<Socket | null>(null);
 
   // Setup WebSocket connection with improved reconnection logic
   useEffect(() => {
@@ -65,173 +50,164 @@ const LikeButton: React.FC<LikeButtonProps> = ({ className = '' }) => {
     let pingInterval: NodeJS.Timeout;
     let reconnectAttempts = 0;
     const MAX_RECONNECT_ATTEMPTS = 3;
-    let fallbackTimer: NodeJS.Timeout;
 
-    // First, try a simple HTTP request to check if the server is reachable
-    // This helps us fail fast if the backend is completely unreachable
-    const checkServerHealth = async () => {
-      try {
-        console.log(`Checking server health at: ${API_URL}/health`);
-        const response = await fetch(`${API_URL}/health`, {
-          method: 'GET',
-          // Set a short timeout to fail fast
-          signal: AbortSignal.timeout(5000)
+    const connectSocket = () => {
+      console.log(`Attempting to connect to WebSocket at: ${API_URL}`);
+
+      // Initialize socket connection with better options
+      // Determine if we need to use secure WebSocket (wss://) based on the API URL
+      const isSecure = API_URL.startsWith('https://');
+
+      console.log(`Using ${isSecure ? 'secure' : 'standard'} WebSocket connection`);
+
+      // Try to connect using the explicit WebSocket URL first
+      // Try a direct connection approach without socket.io
+      console.log('Attempting direct HTTP connection first...');
+
+      // First, let's try a simple HTTP request to check if the server is reachable
+      fetch(`${API_URL}/health`)
+        .then(response => {
+          console.log('Server health check response:', response.status);
+        })
+        .catch(err => {
+          console.error('Server health check failed:', err);
         });
 
-        if (response.ok) {
-          console.log('Server health check successful:', response.status);
-          return true;
-        } else {
-          console.warn('Server health check failed with status:', response.status);
-          return false;
-        }
-      } catch (err) {
-        console.error('Server health check failed:', err);
-        return false;
-      }
-    };
+      // Now initialize socket with more resilient options
+      const socket = io(API_URL, {
+        reconnectionAttempts: 5,
+        reconnectionDelay: 2000,
+        timeout: 20000, // Increased timeout
+        transports: ['polling', 'websocket'], // Try polling first, then WebSocket
+        autoConnect: true,
+        secure: isSecure,
+        rejectUnauthorized: false,
+        forceNew: true,
+        upgrade: true
+      } as any); // Using 'as any' to bypass TypeScript checking for socket.io options
 
-    // Function to connect to WebSocket
-    const connectSocket = async () => {
-      // If socket.io module isn't loaded yet or server is unreachable, use HTTP fallback
-      if (!io) {
-        console.warn('Socket.io not available, using HTTP fallback');
-        fetchLikesHttp();
-        return;
-      }
+      socketRef.current = socket;
 
-      try {
-        // Check server health before attempting WebSocket connection
-        const isServerHealthy = await checkServerHealth();
-        if (!isServerHealthy) {
-          console.warn('Server health check failed, using HTTP fallback');
-          fetchLikesHttp();
-          return;
-        }
+      // Handle connection events
+      socket.on('connect', () => {
+        console.log('WebSocket connected successfully');
+        setSocketConnected(true);
+        reconnectAttempts = 0; // Reset reconnect attempts on successful connection
 
-        console.log(`Attempting to connect to WebSocket at: ${API_URL}`);
-        const isSecure = API_URL.startsWith('https://');
-        console.log(`Using ${isSecure ? 'secure' : 'standard'} WebSocket connection`);
+        // Set up ping interval to keep connection alive
+        pingInterval = setInterval(() => {
+          socket.emit('ping', (response: any) => {
+            console.log('Ping response:', response);
+          });
+        }, 30000); // Ping every 30 seconds
+      });
 
-        // Initialize socket with more resilient options
-        const socket = io(API_URL, {
-          reconnectionAttempts: 3,
-          reconnectionDelay: 2000,
-          timeout: 10000, // Reduced timeout to fail faster
-          transports: ['polling', 'websocket'], // Try polling first, then WebSocket
-          autoConnect: true,
-          forceNew: true
-        });
+      socket.on('disconnect', (reason) => {
+        console.log(`WebSocket disconnected: ${reason}`);
+        setSocketConnected(false);
+        clearInterval(pingInterval);
 
-        socketRef.current = socket as unknown as SocketType;
-
-        // Handle connection events
-        socket.on('connect', () => {
-          console.log('WebSocket connected successfully');
-          setSocketConnected(true);
-          reconnectAttempts = 0; // Reset reconnect attempts on successful connection
-
-          // Set up ping interval to keep connection alive
-          pingInterval = setInterval(() => {
-            socket.emit('ping', (response: any) => {
-              console.log('Ping response:', response);
-            });
-          }, 30000); // Ping every 30 seconds
-        });
-
-        socket.on('disconnect', (reason: string) => {
-          console.log(`WebSocket disconnected: ${reason}`);
-          setSocketConnected(false);
-          clearInterval(pingInterval);
-
-          // Attempt to reconnect if disconnected unexpectedly
-          if (reason === 'io server disconnect' || reason === 'transport close') {
-            if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
-              reconnectAttempts++;
-              console.log(`Attempting to reconnect (${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})...`);
-              reconnectTimer = setTimeout(connectSocket, 3000);
-            } else {
-              console.log('Max reconnect attempts reached, falling back to HTTP');
-              fetchLikesHttp();
-            }
-          }
-        });
-
-        socket.on('connect_error', (err: Error) => {
-          console.error('WebSocket connection error:', err.message);
-          setSocketConnected(false);
-
-          // Fall back to HTTP if WebSocket fails
-          fetchLikesHttp();
-
-          // Try to reconnect after a delay, but only up to MAX_RECONNECT_ATTEMPTS
+        // Attempt to reconnect if disconnected unexpectedly
+        if (reason === 'io server disconnect' || reason === 'transport close') {
           if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
             reconnectAttempts++;
             console.log(`Attempting to reconnect (${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})...`);
-            reconnectTimer = setTimeout(connectSocket, 5000);
+            reconnectTimer = setTimeout(connectSocket, 3000);
           } else {
-            console.log('Max reconnect attempts reached, giving up on WebSocket');
-          }
-        });
-
-        // Handle initial likes count
-        socket.on('initial-likes', (data: { count: number, error?: boolean }) => {
-          console.log('Received initial likes:', data);
-          if (data.error) {
-            console.warn('Error in initial likes data, using fallback value');
+            console.log('Max reconnect attempts reached, falling back to HTTP');
             fetchLikesHttp();
-          } else {
-            setLikes(data.count);
-            setIsLoading(false);
+          }
+        }
+      });
+
+      socket.on('connect_error', (err) => {
+        console.error('WebSocket connection error:', err);
+        console.error('WebSocket connection error details:', {
+          message: err.message,
+          type: err.type,
+          description: err.description,
+          context: {
+            url: API_URL,
+            isSecure: API_URL.startsWith('https://'),
+            transport: (socket as any).io?.engine?.transport?.name || 'unknown'
           }
         });
 
-        // Handle real-time like updates
-        socket.on('like-update', (data: { count: number }) => {
-          console.log('Received like update:', data);
-          setLikes(data.count);
-        });
-      } catch (error) {
-        console.error('Error during WebSocket connection:', error);
+        setSocketConnected(false);
+
+        // Fall back to HTTP if WebSocket fails
         fetchLikesHttp();
-      }
-    };
 
-    // Start with HTTP request to get initial data quickly
-    fetchLikesHttp();
-
-    // Then try to establish WebSocket connection for real-time updates
-    // Wrap in setTimeout to ensure it doesn't block rendering
-    setTimeout(() => {
-      connectSocket().catch(err => {
-        console.error('Failed to connect to WebSocket:', err);
-        // Already called fetchLikesHttp in connectSocket
-      });
-    }, 100);
-
-    // Set up a fallback timer in case the connection doesn't establish quickly
-    fallbackTimer = setTimeout(() => {
-      if (!socketConnected) {
-        console.log('WebSocket connection taking too long, using HTTP fallback');
-        fetchLikesHttp();
-      }
-    }, 5000);
-
-    // Clean up function
-    return () => {
-      clearTimeout(fallbackTimer);
-      clearTimeout(reconnectTimer);
-      clearInterval(pingInterval);
-
-      if (socketRef.current) {
-        console.log('Disconnecting WebSocket');
-        try {
-          socketRef.current.disconnect();
-        } catch (err) {
-          console.error('Error disconnecting socket:', err);
+        // Try to reconnect after a delay, but only up to MAX_RECONNECT_ATTEMPTS
+        if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
+          reconnectAttempts++;
+          console.log(`Attempting to reconnect (${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})...`);
+          reconnectTimer = setTimeout(connectSocket, 5000);
+        } else {
+          console.log('Max reconnect attempts reached, giving up on WebSocket');
         }
-      }
+      });
+
+      // Handle initial likes count
+      socket.on('initial-likes', (data) => {
+        console.log('Received initial likes:', data);
+        if (data.error) {
+          console.warn('Error in initial likes data, using fallback value');
+          fetchLikesHttp();
+        } else {
+          setLikes(data.count);
+          setIsLoading(false);
+        }
+      });
+
+      // Handle real-time like updates
+      socket.on('like-update', (data) => {
+        console.log('Received like update:', data);
+        setLikes(data.count);
+      });
     };
+
+    // Initial connection attempt with fallback
+    try {
+      connectSocket();
+
+      // Set up a fallback timer in case the connection doesn't establish quickly
+      const fallbackTimer = setTimeout(() => {
+        if (!socketConnected) {
+          console.log('WebSocket connection taking too long, falling back to HTTP');
+          // Try one more direct HTTP request to get likes
+          fetchLikesHttp();
+
+          // But don't give up on WebSocket yet - it might still connect
+          console.log('Still waiting for WebSocket connection in the background...');
+        }
+      }, 10000); // Wait 10 seconds before falling back to HTTP, but keep trying WebSocket
+
+      // Clean up the fallback timer if component unmounts
+      return () => {
+        clearTimeout(fallbackTimer);
+        if (socketRef.current) {
+          console.log('Disconnecting WebSocket');
+          socketRef.current.disconnect();
+        }
+        clearTimeout(reconnectTimer);
+        clearInterval(pingInterval);
+      };
+    } catch (error) {
+      console.error('Error during WebSocket initialization:', error);
+      fetchLikesHttp();
+
+      // Return cleanup function
+      return () => {
+        if (socketRef.current) {
+          socketRef.current.disconnect();
+        }
+        clearTimeout(reconnectTimer);
+        clearInterval(pingInterval);
+      };
+    }
+
+    // The cleanup function is now returned in the try/catch blocks above
   }, []);
 
   // Load likes count and check if user has already liked
@@ -546,12 +522,12 @@ const LikeButton: React.FC<LikeButtonProps> = ({ className = '' }) => {
 
       <div className="text-xs text-white/60 font-medium">
         {isLoading ? (
-          <span className="inline-block w-4 h-4 border-2 border-white/20 border-t-white/60 rounded-full animate-spin"></span>
-        ) : error ? (
-          <span className="text-red-400 text-xs">{t('Error')}</span>
-        ) : (
-          <span>{likes}</span>
-        )}
+      <span className="inline-block w-4 h-4 border-2 border-white/20 border-t-white/60 rounded-full animate-spin"></span>
+      ) : error ? (<T id="components.likebutton.0">
+        <span className="text-red-400 text-xs">Error</span></T>
+      ) : (
+      <span>{likes}</span>
+      )}
       </div>
     </div>
   );

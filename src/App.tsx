@@ -48,7 +48,7 @@ import { lazyImport } from './utils/lazyImport';
  * preloading of components. This improves initial load time while allowing
  * for preloading components when they're likely to be needed.
  */
-import { useGT, Var } from "gt-react";
+import { T, Var } from "gt-react";
 
 const { Component: Settings } = lazyImport(() => import('./components/Settings'));
 const { Component: BugGame, preload: preloadBugGame } = lazyImport(() => import('./components/BugGame'));
@@ -68,7 +68,6 @@ const { Component: Profile, preload: preloadProfile } = lazyImport(() => import(
 const App: React.FC = () => {
   // Theme context for applying the current theme
   const { currentTheme } = useTheme();
-  const t = useGT();
 
   // State for managing files, tabs, and UI components
   const [openFiles, setOpenFiles] = useState<FileItem[]>([]); // Currently open files/tabs
@@ -267,13 +266,13 @@ const App: React.FC = () => {
 
   const renderContent = () => {
     // Create a loading component for Suspense fallback
-    const LoadingFallback = () => (
+    const LoadingFallback = () => (<T id="app.0">
       <div className="h-full w-full flex items-center justify-center">
         <div className="flex flex-col items-center">
           <div className="w-12 h-12 border-4 border-vscode-accent/30 border-t-vscode-accent rounded-full animate-spin"></div>
-          <p className="mt-4 text-white/60">{t('Loading...')}</p>
+          <p className="mt-4 text-white/60">Loading...</p>
         </div>
-      </div>
+      </div></T>
     );
 
     // Wrap content in ErrorBoundary and Suspense
@@ -320,10 +319,10 @@ const App: React.FC = () => {
       case '/game/MemoryMatch':
         return renderWithSuspense(<MemoryGame />);
       default:
-        return (
+        return (<T id="app.1">
           <div className="p-4">
-            <p>{t('Content for')} <Var>{activeFile.path}</Var> {t('is not yet implemented.')}</p>
-          </div>
+            <p>Content for <Var>{activeFile.path}</Var> is not yet implemented.</p>
+          </div></T>
         );
     }
   };
@@ -398,17 +397,18 @@ const App: React.FC = () => {
             }} />
 
           )}
-            {showCodePlayground && (
+            {showCodePlayground && (<T id="app.2">
             <div className="fixed inset-0 z-50 bg-[#1e1e1e] overflow-auto">
                 <div className="absolute top-4 right-4 z-10">
                   <button
                   onClick={() => setShowCodePlayground(false)}
                   className="p-2 bg-[#2d2d2d] hover:bg-[#3d3d3d] text-white/80 rounded-md">
-                    {t('Close')}
+
+                    Close
                   </button>
                 </div>
                 <CodePlayground onClose={() => setShowCodePlayground(false)} />
-              </div>
+              </div></T>
           )}
             {showChatBot && !isChatBotFullscreen && (
           <div className="fixed bottom-0 right-0 w-[350px] h-[450px] z-50 shadow-lg">
