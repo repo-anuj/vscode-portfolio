@@ -126,6 +126,10 @@ The server also supports real-time communication via WebSockets.
 
 ### Render (Recommended for WebSocket Support)
 
+For detailed deployment instructions, see [RENDER_DEPLOYMENT.md](./RENDER_DEPLOYMENT.md).
+
+Quick steps:
+
 1. Create a [Render](https://render.com/) account
 
 2. From your Render dashboard, click "New" and select "Web Service"
@@ -136,8 +140,9 @@ The server also supports real-time communication via WebSockets.
    - **Name**: `portfolio-backend` (or your preferred name)
    - **Region**: Choose a region close to your target audience
    - **Branch**: `main` (or your default branch)
+   - **Root Directory**: `backend` (important if your backend is in a subdirectory)
    - **Runtime**: `Node`
-   - **Build Command**: `npm install`
+   - **Build Command**: `npm install && npm run build`
    - **Start Command**: `npm start`
    - **Plan**: Free (or select a paid plan for production)
 

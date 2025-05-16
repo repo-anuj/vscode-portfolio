@@ -3,7 +3,7 @@ services:
     name: portfolio-backend
     env: node
     buildCommand: npm install && npm run build
-    startCommand: npm start
+    startCommand: bash ./start.sh
     envVars:
       - key: NODE_ENV
         value: production
