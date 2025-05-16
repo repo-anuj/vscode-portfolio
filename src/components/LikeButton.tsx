@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Heart } from 'lucide-react';
-import { T } from "gt-react";
+import { useGT } from "gt-react";
 
 // Lazy import socket.io-client to prevent it from blocking rendering
 // This helps prevent white screen issues if socket.io fails to load
@@ -57,6 +57,9 @@ const LikeButton: React.FC<LikeButtonProps> = ({ className = '' }) => {
   const [error, setError] = useState<string | null>(null);
   const [socketConnected, setSocketConnected] = useState<boolean>(false);
   const socketRef = useRef<SocketType | null>(null);
+
+  // Get the GT translation function - this ensures we're inside the GTProvider context
+  const t = useGT();
 
   // Setup WebSocket connection with improved reconnection logic
   useEffect(() => {
@@ -546,8 +549,8 @@ const LikeButton: React.FC<LikeButtonProps> = ({ className = '' }) => {
       <div className="text-xs text-white/60 font-medium">
         {isLoading ? (
       <span className="inline-block w-4 h-4 border-2 border-white/20 border-t-white/60 rounded-full animate-spin"></span>
-      ) : error ? (<T id="components.likebutton.0">
-        <span className="text-red-400 text-xs">Error</span></T>
+      ) : error ? (
+        <span className="text-red-400 text-xs">{t('Error')}</span>
       ) : (
       <span>{likes}</span>
       )}
