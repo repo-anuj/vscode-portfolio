@@ -43,6 +43,15 @@ app.get('/health', (_, res) => {
 console.log('Connecting to MongoDB...');
 const connectWithRetry = () => {
   console.log('MongoDB connection attempt...');
+
+  // Mask the connection string to avoid exposing credentials in logs
+  const connectionString = process.env.MONGODB_URI || '';
+  const maskedUri = connectionString.replace(
+    /mongodb(\+srv)?:\/\/([^:]+):([^@]+)@/,
+    'mongodb$1://$2:****@'
+  );
+  console.log(`Using connection string: ${maskedUri}`);
+
   mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -51,7 +60,9 @@ const connectWithRetry = () => {
     console.log('Connected to MongoDB successfully');
   })
   .catch(err => {
-    console.error('MongoDB connection error:', err);
+    // Create a safe error message that doesn't expose the connection string
+    const safeError = err.toString().replace(connectionString, maskedUri);
+    console.error('MongoDB connection error:', safeError);
     console.error('Please check your MongoDB connection string and make sure your IP is whitelisted in MongoDB Atlas');
     console.log('Retrying connection in 5 seconds...');
     setTimeout(connectWithRetry, 5000);
