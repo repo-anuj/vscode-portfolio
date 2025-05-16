@@ -1,8 +1,25 @@
+import React, { memo } from 'react'
 import { GitBranch, Wifi, Zap, FileJson, Globe, Coffee, Code } from 'lucide-react'
+import LanguageSelector from './LanguageSelector'
 
-const StatusBar = () => {
+/**
+ * Props for the StatusBar component
+ */
+interface StatusBarProps {
+  /** Optional CSS class name */
+  className?: string
+}
+
+/**
+ * StatusBar component that displays the bottom status bar with various indicators
+ * Memoized to prevent unnecessary re-renders
+ *
+ * @param {StatusBarProps} props - Component props
+ * @returns {JSX.Element} Rendered StatusBar component
+ */
+const StatusBar: React.FC<StatusBarProps> = memo(({ className = '' }) => {
   return (
-    <div className="h-[22px] bg-vscode-titlebar text-white/80 text-xs px-2 flex items-center select-none border-t border-[#2d2d2d]">
+    <div className={`h-[22px] bg-vscode-titlebar text-white/80 text-xs px-2 flex items-center select-none border-t border-[#2d2d2d] ${className}`}>
       {/* Left Section */}
       <div className="flex-1 flex items-center">
         <div className="flex items-center gap-2">
@@ -45,6 +62,7 @@ const StatusBar = () => {
             <Globe size={14} />
             <span className="hidden sm:inline">UTF-8</span>
           </button>
+          <LanguageSelector />
           <button className="flex items-center gap-1 hover:text-white transition-colors px-1 py-0.5 rounded hover:bg-white/10 group">
             <Zap size={14} className="text-green-500 group-hover:animate-pulse" />
             <span className="hidden sm:inline">Ready</span>
@@ -53,6 +71,6 @@ const StatusBar = () => {
       </div>
     </div>
   )
-}
+})
 
 export default StatusBar

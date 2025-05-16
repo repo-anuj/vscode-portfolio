@@ -1,46 +1,48 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
-import { Bug, Volume2, VolumeX } from 'lucide-react'
-import ConfettiGenerator from 'confetti-js'
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { Bug, Volume2, VolumeX } from 'lucide-react';
+import ConfettiGenerator from 'confetti-js';
+import { T, Var } from "gt-react";
+
 
 interface BugPosition {
-  id: number
-  x: number
-  y: number
-  speed: number
-  direction: number
-  size: 'small' | 'medium' | 'large'
+  id: number;
+  x: number;
+  y: number;
+  speed: number;
+  direction: number;
+  size: 'small' | 'medium' | 'large';
 }
 
 const BUG_SIZES = {
   small: { scale: 1, points: 10, color: '#4ec9b0' },
   medium: { scale: 1.5, points: 20, color: '#569cd6' },
   large: { scale: 2, points: 30, color: '#ce9178' }
-}
+};
 
 const BugGame = () => {
-  const [score, setScore] = useState(0)
-  const [highScore, setHighScore] = useState(0)
-  const [bugs, setBugs] = useState<BugPosition[]>([])
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [timeLeft, setTimeLeft] = useState(30)
-  const [level, setLevel] = useState(1)
-  const [isMuted, setIsMuted] = useState(false)
-  const confettiRef = useRef<HTMLCanvasElement>(null)
+  const [score, setScore] = useState(0);
+  const [highScore, setHighScore] = useState(0);
+  const [bugs, setBugs] = useState<BugPosition[]>([]);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(30);
+  const [level, setLevel] = useState(1);
+  const [isMuted, setIsMuted] = useState(false);
+  const confettiRef = useRef<HTMLCanvasElement>(null);
 
   // Sound effects
-  const shootSound = new Audio('/sounds/shoot.mp3')
-  const bugDeathSound = new Audio('/sounds/bug-death.mp3')
-  const gameOverSound = new Audio('/sounds/game-over.mp3')
-  const levelUpSound = new Audio('/sounds/level-up.mp3')
+  const shootSound = new Audio('/sounds/shoot.mp3');
+  const bugDeathSound = new Audio('/sounds/bug-death.mp3');
+  const gameOverSound = new Audio('/sounds/game-over.mp3');
+  const levelUpSound = new Audio('/sounds/level-up.mp3');
 
   const playSound = useCallback((sound: HTMLAudioElement) => {
     if (!isMuted) {
-      sound.currentTime = 0
+      sound.currentTime = 0;
       sound.play().catch(() => {
+
         // Handle any playback errors silently
-      })
-    }
-  }, [isMuted])
+      });}
+  }, [isMuted]);
 
   const startConfetti = useCallback(() => {
     if (confettiRef.current) {
@@ -55,21 +57,21 @@ const BugGame = () => {
         rotate: true,
         start_from_edge: true,
         respawn: false
-      }
-      const confetti = new ConfettiGenerator(confettiSettings)
-      confetti.render()
+      };
+      const confetti = new ConfettiGenerator(confettiSettings);
+      confetti.render();
 
       // Stop confetti after 2 seconds
       setTimeout(() => {
-        confetti.clear()
-      }, 2000)
+        confetti.clear();
+      }, 2000);
     }
-  }, [])
+  }, []);
 
   const spawnBug = useCallback(() => {
-    const sizes: ('small' | 'medium' | 'large')[] = ['small', 'medium', 'large']
-    const size = sizes[Math.floor(Math.random() * sizes.length)]
-    
+    const sizes: ('small' | 'medium' | 'large')[] = ['small', 'medium', 'large'];
+    const size = sizes[Math.floor(Math.random() * sizes.length)];
+
     const newBug: BugPosition = {
       id: Date.now(),
       x: Math.random() * (window.innerWidth - 100),
@@ -77,190 +79,190 @@ const BugGame = () => {
       speed: 2 + Math.random() * (level * 0.5),
       direction: Math.random() * Math.PI * 2,
       size
-    }
-    setBugs(prev => [...prev, newBug])
-  }, [level])
+    };
+    setBugs((prev) => [...prev, newBug]);
+  }, [level]);
 
   const removeBug = (id: number, size: 'small' | 'medium' | 'large') => {
-    playSound(bugDeathSound)
-    setBugs(prev => prev.filter(bug => bug.id !== id))
-    setScore(prev => {
-      const newScore = prev + (BUG_SIZES[size].points * level)
+    playSound(bugDeathSound);
+    setBugs((prev) => prev.filter((bug) => bug.id !== id));
+    setScore((prev) => {
+      const newScore = prev + (BUG_SIZES[size].points * level);
       if (newScore > highScore) {
-        setHighScore(newScore)
-        localStorage.setItem('bugHunterHighScore', newScore.toString())
-        startConfetti() // Celebrate new high score
+        setHighScore(newScore);
+        localStorage.setItem('bugHunterHighScore', newScore.toString());
+        startConfetti(); // Celebrate new high score
       }
-      return newScore
-    })
-  }
+      return newScore;
+    });
+  };
 
   const startGame = () => {
-    setIsPlaying(true)
-    setScore(0)
-    setTimeLeft(30)
-    setLevel(1)
-    setBugs([])
-  }
+    setIsPlaying(true);
+    setScore(0);
+    setTimeLeft(30);
+    setLevel(1);
+    setBugs([]);
+  };
 
   // Load high score
   useEffect(() => {
-    const savedHighScore = localStorage.getItem('bugHunterHighScore')
+    const savedHighScore = localStorage.getItem('bugHunterHighScore');
     if (savedHighScore) {
-      setHighScore(parseInt(savedHighScore))
+      setHighScore(parseInt(savedHighScore));
     }
-  }, [])
+  }, []);
 
   // Game timer
   useEffect(() => {
-    if (!isPlaying) return
+    if (!isPlaying) return;
 
     const timer = setInterval(() => {
-      setTimeLeft(prev => {
+      setTimeLeft((prev) => {
         if (prev <= 1) {
-          setIsPlaying(false)
-          playSound(gameOverSound)
-          return 0
+          setIsPlaying(false);
+          playSound(gameOverSound);
+          return 0;
         }
-        return prev - 1
-      })
-    }, 1000)
+        return prev - 1;
+      });
+    }, 1000);
 
-    return () => clearInterval(timer)
-  }, [isPlaying])
+    return () => clearInterval(timer);
+  }, [isPlaying]);
 
   // Spawn bugs
   useEffect(() => {
-    if (!isPlaying) return
+    if (!isPlaying) return;
 
     const spawnInterval = setInterval(() => {
-      spawnBug()
-    }, 2000 / level)
+      spawnBug();
+    }, 2000 / level);
 
-    return () => clearInterval(spawnInterval)
-  }, [isPlaying, level, spawnBug])
+    return () => clearInterval(spawnInterval);
+  }, [isPlaying, level, spawnBug]);
 
   // Move bugs
   useEffect(() => {
-    if (!isPlaying) return
+    if (!isPlaying) return;
 
     const moveInterval = setInterval(() => {
-      setBugs(prev => prev.map(bug => {
-        let newX = bug.x + Math.cos(bug.direction) * bug.speed
-        let newY = bug.y + Math.sin(bug.direction) * bug.speed
+      setBugs((prev) => prev.map((bug) => {
+        let newX = bug.x + Math.cos(bug.direction) * bug.speed;
+        let newY = bug.y + Math.sin(bug.direction) * bug.speed;
 
         // Bounce off walls
         if (newX < 0 || newX > window.innerWidth - 100) {
-          bug.direction = Math.PI - bug.direction
-          newX = bug.x
+          bug.direction = Math.PI - bug.direction;
+          newX = bug.x;
         }
         if (newY < 0 || newY > window.innerHeight - 100) {
-          bug.direction = -bug.direction
-          newY = bug.y
+          bug.direction = -bug.direction;
+          newY = bug.y;
         }
 
-        return { ...bug, x: newX, y: newY }
-      }))
-    }, 16)
+        return { ...bug, x: newX, y: newY };
+      }));
+    }, 16);
 
-    return () => clearInterval(moveInterval)
-  }, [isPlaying])
+    return () => clearInterval(moveInterval);
+  }, [isPlaying]);
 
   // Level up
   useEffect(() => {
     if (score >= level * 100) {
-      setLevel(prev => prev + 1)
+      setLevel((prev) => prev + 1);
     }
-  }, [score, level])
+  }, [score, level]);
 
   // Level up effect
   useEffect(() => {
     if (level > 1) {
-      playSound(levelUpSound)
-      startConfetti()
+      playSound(levelUpSound);
+      startConfetti();
     }
-  }, [level, playSound, startConfetti])
+  }, [level, playSound, startConfetti]);
 
-  return (
+  return (<T id="components.buggame.5">
     <div className="relative w-full h-full bg-[#1e1e1e] overflow-hidden p-6">
-      <canvas 
+      <canvas
         ref={confettiRef}
         className="fixed inset-0 pointer-events-none z-50"
-        style={{ width: '100%', height: '100%' }}
-      />
+        style={{ width: '100%', height: '100%' }} />
+      
       
       {/* Header */}
       <div className="absolute top-4 right-4 z-10">
         <button
           onClick={() => setIsMuted(!isMuted)}
-          className="p-2 hover:bg-[#37373d] rounded-md transition-colors text-white/80"
-        >
-          {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+          className="p-2 hover:bg-[#37373d] rounded-md transition-colors text-white/80">
+          
+          <Var>{isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}</Var>
         </button>
       </div>
 
       {/* Score Display */}
       <div className="absolute top-4 left-4 text-white/80 space-y-2 bg-[#2d2d2d] p-4 rounded-lg">
-        <div className="text-lg">Score: {score}</div>
-        <div className="text-lg">High Score: {highScore}</div>
-        <div className="text-lg">Level: {level}</div>
-        <div className="text-lg">Time: {timeLeft}s</div>
+        <div className="text-lg">Score: <Var>{score}</Var></div>
+        <div className="text-lg">High Score: <Var>{highScore}</Var></div>
+        <div className="text-lg">Level: <Var>{level}</Var></div>
+        <div className="text-lg">Time: <Var>{timeLeft}</Var>s</div>
       </div>
 
       {/* Bug Legend */}
       <div className="absolute top-4 left-1/2 -translate-x-1/2 flex gap-6 bg-[#2d2d2d] p-4 rounded-lg">
-        {Object.entries(BUG_SIZES).map(([size, { points, color }]) => (
-          <div key={size} className="flex items-center gap-2 text-white/80">
+        <Var>{Object.entries(BUG_SIZES).map(([size, { points, color }]) => (<T id="components.buggame.6">
+            <div key={size} className="flex items-center gap-2 text-white/80">
             <Bug style={{ color }} size={16 * (size === 'small' ? 1 : size === 'medium' ? 1.5 : 2)} />
-            <span>{points} pts</span>
-          </div>
-        ))}
+            <span><Var>{points}</Var> pts</span>
+          </div></T>
+          ))}</Var>
       </div>
 
       {/* Bugs */}
-      {bugs.map(bug => (
+      <Var>{bugs.map((bug) => (
         <button
           key={bug.id}
           className="absolute transition-transform hover:scale-110 active:scale-95"
-          style={{ 
+          style={{
             left: bug.x,
             top: bug.y,
             transform: `rotate(${(bug.direction * 180) / Math.PI}deg)`,
             color: BUG_SIZES[bug.size].color
           }}
           onClick={() => {
-            playSound(shootSound)
-            removeBug(bug.id, bug.size)
-          }}
-        >
-          <Bug 
-            className="transition-colors" 
-            size={24 * BUG_SIZES[bug.size].scale}
-          />
+            playSound(shootSound);
+            removeBug(bug.id, bug.size);
+          }}>
+          
+          <Bug
+            className="transition-colors"
+            size={24 * BUG_SIZES[bug.size].scale} />
+          
         </button>
-      ))}
+        ))}</Var>
 
       {/* Start/Game Over Screen */}
-      {!isPlaying && (
+      <Var>{!isPlaying && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm">
           <div className="text-center space-y-4">
             <h2 className="text-3xl font-bold text-white">
-              {timeLeft === 0 ? 'Game Over!' : 'Bug Hunter'}
+              {timeLeft === 0 ? <T id="components.buggame.0">{'Game Over!'}</T> : <T id="components.buggame.1">{'Bug Hunter'}</T>}
             </h2>
-            {timeLeft === 0 && (
-              <p className="text-xl text-white">Final Score: {score}</p>
+            {timeLeft === 0 && (<T id="components.buggame.2">
+              <p className="text-xl text-white">Final Score: <Var>{score}</Var></p></T>
             )}
             <button
               onClick={startGame}
-              className="px-6 py-2 bg-vscode-accent text-white rounded-md hover:bg-vscode-accent/80 transition-colors"
-            >
-              {timeLeft === 0 ? 'Play Again' : 'Start Game'}
+              className="px-6 py-2 bg-vscode-accent text-white rounded-md hover:bg-vscode-accent/80 transition-colors">
+              
+              {timeLeft === 0 ? <T id="components.buggame.3">{'Play Again'}</T> : <T id="components.buggame.4">{'Start Game'}</T>}
             </button>
           </div>
         </div>
-      )}
-    </div>
-  )
-}
+        )}</Var>
+    </div></T>
+  );
+};
 
-export default BugGame
+export default BugGame;

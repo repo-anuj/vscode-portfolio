@@ -2,6 +2,7 @@ import React from 'react'
 import { X, ChevronLeft, ChevronRight } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { FileItem } from '../types'
+import { handleKeyboardNavigation } from '../utils/a11y'
 
 // interface Tab {
 //   name: string
@@ -54,13 +55,19 @@ const TabsBar: React.FC<TabsBarProps> = ({
   }
 
   return (
-    <div className={`relative flex items-center bg-vscode-editor border-b border-[#2d2d2d] ${className}`}>
+    <div
+      className={`relative flex items-center bg-vscode-editor border-b border-[#2d2d2d] ${className}`}
+      role="tablist"
+      aria-label="Open files"
+    >
       {showScrollButtons && showLeftScroll && (
         <motion.button
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={() => scroll('left')}
+          onKeyDown={(e) => handleKeyboardNavigation(e, () => scroll('left'))}
+          aria-label="Scroll tabs left"
           className="absolute left-0 z-10 h-full px-1 bg-vscode-editor text-white/60 hover:text-white
             hover:bg-white/5 transition-colors duration-200"
         >
@@ -68,7 +75,7 @@ const TabsBar: React.FC<TabsBarProps> = ({
         </motion.button>
       )}
 
-      <div 
+      <div
         ref={scrollRef}
         className="flex-1 flex overflow-x-auto scrollbar-hide"
         onScroll={checkScroll}
@@ -90,12 +97,17 @@ const TabsBar: React.FC<TabsBarProps> = ({
             <button
               className="flex-1 flex items-center gap-2 text-sm truncate"
               onClick={() => onTabClick(file)}
+              onKeyDown={(e) => handleKeyboardNavigation(e, () => onTabClick(file))}
+              role="tab"
+              aria-selected={activeFile?.path === file.path}
+              aria-controls={`panel-${file.path.replace(/\//g, '-')}`}
+              tabIndex={activeFile?.path === file.path ? 0 : -1}
             >
               <span className="truncate">{file.name}</span>
             </button>
             <motion.button
               initial={{ opacity: 0 }}
-              whileHover={{ 
+              whileHover={{
                 opacity: 1,
                 backgroundColor: 'rgba(255, 255, 255, 0.1)'
               }}
@@ -104,6 +116,11 @@ const TabsBar: React.FC<TabsBarProps> = ({
                 e.stopPropagation()
                 onTabClose(file)
               }}
+              onKeyDown={(e) => {
+                e.stopPropagation()
+                handleKeyboardNavigation(e, () => onTabClose(file))
+              }}
+              aria-label={`Close ${file.name}`}
             >
               <X size={14} />
             </motion.button>
@@ -117,6 +134,8 @@ const TabsBar: React.FC<TabsBarProps> = ({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={() => scroll('right')}
+          onKeyDown={(e) => handleKeyboardNavigation(e, () => scroll('right'))}
+          aria-label="Scroll tabs right"
           className="absolute right-0 z-10 h-full px-1 bg-vscode-editor text-white/60 hover:text-white
             hover:bg-white/5 transition-colors duration-200"
         >
@@ -127,4 +146,4 @@ const TabsBar: React.FC<TabsBarProps> = ({
   )
 }
 
-export default TabsBar 
+export default TabsBar

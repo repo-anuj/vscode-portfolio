@@ -15,13 +15,67 @@
   .welcome-screen-header h1 {
     font-size: 2rem;
   }
-  
+
   .welcome-screen-header p {
     font-size: 1.25rem;
   }
-  
+
   .welcome-screen-recent-path {
     display: none;
+  }
+
+  .welcome-screen-container {
+    padding: 1rem;
+  }
+
+  .walkthrough-card {
+    margin-bottom: 1rem;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .welcome-screen-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .welcome-screen-header p {
+    font-size: 1rem;
+  }
+
+  .welcome-screen-container {
+    padding: 0.75rem;
+  }
+
+  /* Increase touch targets for mobile */
+  .welcome-button {
+    padding: 0.5rem 0.75rem;
+    min-height: 44px;
+  }
+
+  /* Adjust spacing for mobile */
+  .welcome-screen-header {
+    margin-bottom: 1.5rem;
+  }
+}
+
+/* Landscape mode on small devices */
+@media (max-height: 500px) and (orientation: landscape) {
+  .welcome-screen-container {
+    padding: 0.5rem;
+  }
+
+  .welcome-screen-header {
+    margin-bottom: 0.75rem;
+  }
+
+  .welcome-screen-header h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0;
+  }
+
+  .welcome-screen-header p {
+    font-size: 0.875rem;
   }
 }
 

@@ -1,5 +1,6 @@
-import { Bug, Terminal, Mail, Settings, Files, Package, Command, Grid } from 'lucide-react'
+import { Bug, Terminal, Mail, Settings, Files, Package, Command, Grid, Bot } from 'lucide-react'
 import { useState } from 'react'
+import LikeButton from './LikeButton'
 
 interface SidebarProps {
   onBugClick: () => void
@@ -9,6 +10,7 @@ interface SidebarProps {
   onSettingsClick: () => void
   onExtensionsClick?: () => void
   onCommandPaletteClick?: () => void
+  onChatBotClick?: () => void
   activeView?: string
 }
 
@@ -20,6 +22,7 @@ const Sidebar = ({
   onSettingsClick,
   onExtensionsClick,
   onCommandPaletteClick,
+  onChatBotClick,
   activeView = 'explorer'
 }: SidebarProps) => {
   const [activeIcon, setActiveIcon] = useState<string>(activeView)
@@ -101,6 +104,20 @@ const Sidebar = ({
           <Command size={24} />
         </button>
 
+        {/* Chat Bot */}
+        <button
+          className={`w-12 h-12 flex items-center justify-center hover:text-white transition-colors relative ${
+            activeIcon === 'chatbot' ? 'text-white' : 'text-white/40'
+          }`}
+          onClick={() => handleIconClick('chatbot', onChatBotClick)}
+          title="AI Assistant"
+        >
+          <Bot size={24} />
+          {activeIcon === 'chatbot' && (
+            <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-white"></div>
+          )}
+        </button>
+
         {/* Bottom section */}
         <div className="mt-auto flex flex-col items-center gap-1 w-full">
           <button
@@ -141,6 +158,11 @@ const Sidebar = ({
               <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-white"></div>
             )}
           </button>
+
+          {/* Like Button */}
+          <div className="mt-4 border-t border-white/10 pt-4">
+            <LikeButton />
+          </div>
         </div>
       </div>
     </div>

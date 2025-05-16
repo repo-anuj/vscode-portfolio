@@ -4,6 +4,9 @@ import { ArrowUpRight, Terminal, Sparkles, Code2 } from 'lucide-react'
 import gsap from 'gsap'
 import Typed from 'typed.js'
 import my from '../assets/my.jpg';
+import OptimizedImage from '../components/OptimizedImage'
+import { getAnimationSettings, optimizeGSAP, getOptimizedVariants } from '../utils/animationUtils'
+import { useGT } from 'gt-react'
 // import '@fontsource/fira-code'
 // import '@fontsource/space-grotesk'
 // import '@fontsource/inter'
@@ -12,35 +15,50 @@ interface HomeProps {
   onContactClick: () => void
 }
 
-const Home = ({ onContactClick }: HomeProps) => {
+const Home: React.FC<HomeProps> = ({ onContactClick }) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const typedRef = useRef<HTMLSpanElement>(null)
+  const t = useGT()
 
   useEffect(() => {
-    // Animate background elements
+    // Get animation settings based on device capabilities
+    const animSettings = getAnimationSettings()
+
+    // Animate background elements with optimized settings
     const ctx = gsap.context(() => {
-      gsap.to('.floating-icon', {
-        y: -20,
-        duration: 2,
-        repeat: -1,
-        yoyo: true,
-        ease: 'power1.inOut',
-        stagger: 0.2
-      })
+      // Create timeline for floating icons
+      const tl = gsap.timeline()
+
+      // Only animate if animations are enabled
+      if (animSettings.enabled) {
+        tl.to('.floating-icon', {
+          y: animSettings.useSimpleAnimations ? -10 : -20,
+          duration: 2 * (animSettings.durationMultiplier || 1),
+          repeat: -1,
+          yoyo: true,
+          ease: 'power1.inOut',
+          stagger: animSettings.useSimpleAnimations ? 0.1 : 0.2
+        })
+
+        // Optimize the timeline based on device capabilities
+        optimizeGSAP(tl)
+      }
     }, containerRef)
 
-    // Initialize typed.js
+    // Initialize typed.js with optimized settings
     const typed = new Typed(typedRef.current!, {
       strings: [
-        'Building digital experiences',
-        'Crafting clean code',
-        'Designing user interfaces',
-        'Creating web solutions'
+        t('Building digital experiences'),
+        t('Crafting clean code'),
+        t('Designing user interfaces'),
+        t('Creating web solutions')
       ],
-      typeSpeed: 50,
-      backSpeed: 30,
+      typeSpeed: animSettings.useSimpleAnimations ? 70 : 50,
+      backSpeed: animSettings.useSimpleAnimations ? 40 : 30,
       backDelay: 1500,
-      loop: true
+      loop: true,
+      // Disable cursor blinking on low-end devices
+      showCursor: !animSettings.useSimpleAnimations
     })
 
     return () => {
@@ -50,12 +68,12 @@ const Home = ({ onContactClick }: HomeProps) => {
   }, [])
 
   return (
-    <div ref={containerRef} className="relative w-full h-full bg-vscode-editor overflow-auto">
+    <div ref={containerRef} className="relative w-full h-full bg-vscode-editor">
       {/* Background Elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute inset-0 bg-gradient-to-br from-vscode-accent/5 via-transparent to-purple-900/10" />
         <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-[0.02]" />
-        
+
         {/* Floating Icons */}
         <Terminal className="floating-icon absolute top-[15%] left-[10%] text-vscode-accent/20 w-12 h-12" />
         <Code2 className="floating-icon absolute top-[30%] right-[15%] text-vscode-accent/20 w-16 h-16" />
@@ -67,16 +85,20 @@ const Home = ({ onContactClick }: HomeProps) => {
         <div className="max-w-6xl w-full mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Text Content */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
+            {...getOptimizedVariants({
+              initial: { opacity: 0, x: -20 },
+              animate: { opacity: 1, x: 0 },
+              transition: { duration: 0.6 }
+            })}
             className="space-y-8"
           >
             <div>
               <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
+                {...getOptimizedVariants({
+                  initial: { opacity: 0, y: 10 },
+                  animate: { opacity: 1, y: 0 },
+                  transition: { delay: 0.2 }
+                })}
                 className="mb-3"
               >
                 <span className="text-vscode-accent font-['Fira_Code'] text-sm tracking-wider">
@@ -92,21 +114,27 @@ const Home = ({ onContactClick }: HomeProps) => {
               </div>
             </div>
 
-            <motion.p 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4 }}
+            <motion.p
+              {...getOptimizedVariants({
+                initial: { opacity: 0 },
+                animate: { opacity: 1 },
+                transition: { delay: 0.4 }
+              })}
               className="text-base lg:text-lg text-white/70 font-['Inter'] leading-relaxed max-w-xl"
             >
-              A passionate full-stack developer who loves to create elegant solutions 
-              with clean, efficient code. Focused on building exceptional digital experiences.
+              
+                A passionate full-stack developer who loves to create elegant solutions
+                with clean, efficient code. Focused on building exceptional digital experiences.
+              
             </motion.p>
 
             {/* CTA Buttons */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
+            <motion.div
+              {...getOptimizedVariants({
+                initial: { opacity: 0, y: 20 },
+                animate: { opacity: 1, y: 0 },
+                transition: { delay: 0.6 }
+              })}
               className="flex flex-wrap gap-4"
             >
               <motion.button
@@ -136,10 +164,12 @@ const Home = ({ onContactClick }: HomeProps) => {
             </motion.div>
 
             {/* Tech Stack */}
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8 }}
+            <motion.div
+              {...getOptimizedVariants({
+                initial: { opacity: 0 },
+                animate: { opacity: 1 },
+                transition: { delay: 0.8 }
+              })}
               className="pt-4"
             >
               <p className="text-white/40 text-sm font-['Fira_Code'] mb-3">Tech Stack</p>
@@ -158,17 +188,21 @@ const Home = ({ onContactClick }: HomeProps) => {
 
           {/* Image Section */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
+            {...getOptimizedVariants({
+              initial: { opacity: 0, scale: 0.95 },
+              animate: { opacity: 1, scale: 1 },
+              transition: { duration: 0.6, delay: 0.4 }
+            })}
             className="relative max-w-md mx-auto lg:ml-auto w-full aspect-square"
           >
             <div className="absolute inset-0 bg-gradient-to-tr from-vscode-accent/20 to-purple-500/20 rounded-full blur-3xl" />
             <div className="relative w-full h-full rounded-2xl overflow-hidden border border-white/10 bg-gradient-to-br from-white/10 to-white/5">
-              <img
+              <OptimizedImage
                 src={my}
                 alt="Anuj Dubey"
-                className="w-full h-full object-cover"
+                className="w-full h-full"
+                objectFit="cover"
+                loading="eager"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
             </div>

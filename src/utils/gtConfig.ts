@@ -1,0 +1,16 @@
+/**
+ * GeneralTranslation configuration utility
+ */
+
+// Create a configuration object for GT
+export const getGTConfig = () => {
+  return {
+    locales: ["en", "es", "fr", "de", "zh"],
+    defaultLocale: "en",
+    apiKey: import.meta.env.VITE_GT_API_KEY,
+    projectId: import.meta.env.VITE_GT_PROJECT_ID,
+    debug: true
+  }
+}
+
+export default getGTConfig

@@ -1,0 +1,162 @@
+/* Responsive utilities for better mobile experience */
+
+/* Base mobile-first styles */
+:root {
+  --header-height: 36px;
+  --sidebar-width: 48px;
+  --explorer-width: 250px;
+  --terminal-height: 300px;
+}
+
+/* Small mobile devices (portrait phones, less than 576px) */
+@media (max-width: 575.98px) {
+  :root {
+    --header-height: 32px;
+    --sidebar-width: 40px;
+    --explorer-width: 100%;
+    --terminal-height: 250px;
+  }
+
+  /* Adjust font sizes for small screens */
+  html {
+    font-size: 14px;
+  }
+
+  /* Make explorer overlay the content on small screens */
+  .file-explorer {
+    position: fixed !important;
+    z-index: 40 !important;
+    top: var(--header-height) !important;
+    left: var(--sidebar-width) !important;
+    height: calc(100vh - var(--header-height)) !important;
+    width: calc(100% - var(--sidebar-width)) !important;
+    max-width: 300px !important;
+  }
+
+  /* Adjust terminal height for small screens */
+  .terminal-container {
+    height: var(--terminal-height) !important;
+  }
+
+  /* Adjust tabs for small screens */
+  .tabs-container {
+    overflow-x: auto !important;
+    scrollbar-width: none !important;
+  }
+
+  .tabs-container::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  /* Adjust welcome screen for small screens */
+  .welcome-container {
+    flex-direction: column !important;
+    padding: 1rem !important;
+  }
+
+  .welcome-section {
+    width: 100% !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  /* Adjust command palette for small screens */
+  .command-palette {
+    width: 90% !important;
+    max-width: 350px !important;
+  }
+}
+
+/* Medium devices (tablets, 576px and up) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  :root {
+    --explorer-width: 220px;
+  }
+
+  /* Adjust welcome screen for medium screens */
+  .welcome-container {
+    padding: 1.5rem !important;
+  }
+}
+
+/* Large devices (desktops, 768px and up) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  :root {
+    --explorer-width: 240px;
+  }
+}
+
+/* Extra large devices (large desktops, 992px and up) */
+@media (min-width: 992px) {
+  :root {
+    --explorer-width: 250px;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) {
+  /* Increase touch targets for better usability */
+  button,
+  .clickable,
+  a,
+  .tab-item,
+  .sidebar-icon {
+    min-height: 40px !important;
+    min-width: 40px !important;
+  }
+
+  /* Add more spacing between clickable elements */
+  .touch-spacing > * {
+    margin: 0.25rem 0 !important;
+  }
+}
+
+/* Landscape orientation adjustments */
+@media (max-height: 500px) and (orientation: landscape) {
+  :root {
+    --terminal-height: 200px;
+  }
+
+  /* Adjust layout for landscape orientation */
+  .main-layout {
+    flex-direction: row !important;
+  }
+
+  /* Reduce padding and margins */
+  .content-padding {
+    padding: 0.5rem !important;
+  }
+
+  /* Adjust welcome screen for landscape */
+  .welcome-container {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  /* Hide UI elements when printing */
+  .header,
+  .sidebar,
+  .tabs-bar,
+  .terminal-container,
+  .status-bar {
+    display: none !important;
+  }
+
+  /* Adjust content for printing */
+  .main-content {
+    overflow: visible !important;
+    height: auto !important;
+    color: black !important;
+    background: white !important;
+  }
+
+  /* Ensure text is readable when printed */
+  * {
+    color: black !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+}

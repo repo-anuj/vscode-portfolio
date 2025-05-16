@@ -21,9 +21,12 @@
     "confetti-js": "^0.0.18",
     "framer-motion": "^12.0.1",
     "gsap": "^3.12.7",
+    "gt-react": "^9.2.20",
+    "gtx-cli": "^1.2.9",
     "lucide-react": "^0.473.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "socket.io-client": "^4.8.1",
     "tailwind-merge": "^2.6.0",
     "typed.js": "^2.1.0"
   },
