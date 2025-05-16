@@ -10,8 +10,12 @@ const API_URL = import.meta.env.VITE_BACKEND_URL ||
     ? 'https://vscode-portfolio-x55n.onrender.com'
     : 'http://localhost:3001');
 
+// Create WebSocket URL with explicit protocol
+const WS_URL = API_URL.replace(/^http/, 'ws').replace(/^https/, 'wss');
+
 // Log the backend URL for debugging
 console.log('Using backend URL:', API_URL);
+console.log('Using WebSocket URL:', WS_URL);
 console.log('Environment variables available:', {
   VITE_BACKEND_URL: import.meta.env.VITE_BACKEND_URL || 'not set',
   NODE_ENV: process.env.NODE_ENV || 'not set'
@@ -51,13 +55,35 @@ const LikeButton: React.FC<LikeButtonProps> = ({ className = '' }) => {
       console.log(`Attempting to connect to WebSocket at: ${API_URL}`);
 
       // Initialize socket connection with better options
+      // Determine if we need to use secure WebSocket (wss://) based on the API URL
+      const isSecure = API_URL.startsWith('https://');
+
+      console.log(`Using ${isSecure ? 'secure' : 'standard'} WebSocket connection`);
+
+      // Try to connect using the explicit WebSocket URL first
+      // Try a direct connection approach without socket.io
+      console.log('Attempting direct HTTP connection first...');
+
+      // First, let's try a simple HTTP request to check if the server is reachable
+      fetch(`${API_URL}/health`)
+        .then(response => {
+          console.log('Server health check response:', response.status);
+        })
+        .catch(err => {
+          console.error('Server health check failed:', err);
+        });
+
+      // Now initialize socket with more resilient options
       const socket = io(API_URL, {
-        reconnectionAttempts: 3,
-        reconnectionDelay: 1000,
-        timeout: 10000,
-        transports: ['websocket', 'polling'], // Try WebSocket first, fall back to polling
-        autoConnect: true, // Ensure auto connection is enabled
-        // Don't specify path - use the default
+        reconnectionAttempts: 5,
+        reconnectionDelay: 2000,
+        timeout: 20000, // Increased timeout
+        transports: ['polling', 'websocket'], // Try polling first, then WebSocket
+        autoConnect: true,
+        secure: isSecure,
+        rejectUnauthorized: false,
+        forceNew: true,
+        upgrade: true
       } as any); // Using 'as any' to bypass TypeScript checking for socket.io options
 
       socketRef.current = socket;
@@ -96,6 +122,17 @@ const LikeButton: React.FC<LikeButtonProps> = ({ className = '' }) => {
 
       socket.on('connect_error', (err) => {
         console.error('WebSocket connection error:', err);
+        console.error('WebSocket connection error details:', {
+          message: err.message,
+          type: err.type,
+          description: err.description,
+          context: {
+            url: API_URL,
+            isSecure: API_URL.startsWith('https://'),
+            transport: (socket as any).io?.engine?.transport?.name || 'unknown'
+          }
+        });
+
         setSocketConnected(false);
 
         // Fall back to HTTP if WebSocket fails
@@ -130,23 +167,47 @@ const LikeButton: React.FC<LikeButtonProps> = ({ className = '' }) => {
       });
     };
 
-    // Initial connection attempt
+    // Initial connection attempt with fallback
     try {
       connectSocket();
+
+      // Set up a fallback timer in case the connection doesn't establish quickly
+      const fallbackTimer = setTimeout(() => {
+        if (!socketConnected) {
+          console.log('WebSocket connection taking too long, falling back to HTTP');
+          // Try one more direct HTTP request to get likes
+          fetchLikesHttp();
+
+          // But don't give up on WebSocket yet - it might still connect
+          console.log('Still waiting for WebSocket connection in the background...');
+        }
+      }, 10000); // Wait 10 seconds before falling back to HTTP, but keep trying WebSocket
+
+      // Clean up the fallback timer if component unmounts
+      return () => {
+        clearTimeout(fallbackTimer);
+        if (socketRef.current) {
+          console.log('Disconnecting WebSocket');
+          socketRef.current.disconnect();
+        }
+        clearTimeout(reconnectTimer);
+        clearInterval(pingInterval);
+      };
     } catch (error) {
       console.error('Error during WebSocket initialization:', error);
       fetchLikesHttp();
+
+      // Return cleanup function
+      return () => {
+        if (socketRef.current) {
+          socketRef.current.disconnect();
+        }
+        clearTimeout(reconnectTimer);
+        clearInterval(pingInterval);
+      };
     }
 
-    // Clean up socket connection and timers on unmount
-    return () => {
-      if (socketRef.current) {
-        console.log('Disconnecting WebSocket');
-        socketRef.current.disconnect();
-      }
-      clearTimeout(reconnectTimer);
-      clearInterval(pingInterval);
-    };
+    // The cleanup function is now returned in the try/catch blocks above
   }, []);
 
   // Load likes count and check if user has already liked
@@ -162,9 +223,9 @@ const LikeButton: React.FC<LikeButtonProps> = ({ className = '' }) => {
           setHasLiked(true);
         }
 
-        // Check if user has already liked with timeout
+        // Check if user has already liked with a longer timeout
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+        const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout for slower connections
 
         const checkResponse = await fetch(`${API_URL}/api/likes/check`, {
           signal: controller.signal,
@@ -180,6 +241,12 @@ const LikeButton: React.FC<LikeButtonProps> = ({ className = '' }) => {
 
         const checkData = await checkResponse.json();
         console.log('Successfully checked like status:', checkData);
+
+        // Log the IP address for debugging
+        if (checkData.ip) {
+          console.log(`Server identified your IP as: ${checkData.ip}`);
+        }
+
         setHasLiked(checkData.hasLiked);
 
         // Update localStorage with the server's response
@@ -191,6 +258,32 @@ const LikeButton: React.FC<LikeButtonProps> = ({ className = '' }) => {
         }
       } catch (err) {
         console.error('Error checking like status:', err);
+
+        // If the error is an AbortError (timeout), try one more time without AbortController
+        if (err instanceof Error && err.name === 'AbortError') {
+          console.log('Timeout occurred when checking like status, trying one more time without timeout...');
+          try {
+            // One more attempt without AbortController
+            const lastAttemptResponse = await fetch(`${API_URL}/api/likes/check`, {
+              method: 'GET'
+            });
+
+            if (lastAttemptResponse.ok) {
+              const lastAttemptData = await lastAttemptResponse.json();
+              console.log('Successfully checked like status on last attempt:', lastAttemptData);
+              setHasLiked(lastAttemptData.hasLiked);
+              localStorage.setItem('portfolio_user_liked', lastAttemptData.hasLiked ? 'true' : 'false');
+
+              // If we already have a WebSocket connection, we don't need to fetch likes count
+              if (!socketConnected) {
+                fetchLikesHttp();
+              }
+              return; // Exit early if successful
+            }
+          } catch (finalErr) {
+            console.error('Final attempt to check like status failed:', finalErr);
+          }
+        }
 
         // Fallback to localStorage
         const userLiked = localStorage.getItem('portfolio_user_liked') === 'true';
@@ -228,9 +321,9 @@ const LikeButton: React.FC<LikeButtonProps> = ({ className = '' }) => {
 
       console.log(`Fetching likes via HTTP from: ${API_URL}/api/likes`);
 
-      // Fetch likes count from backend with timeout
+      // Fetch likes count from backend with a longer timeout
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout for slower connections
 
       const countResponse = await fetch(`${API_URL}/api/likes`, {
         signal: controller.signal,
@@ -253,9 +346,32 @@ const LikeButton: React.FC<LikeButtonProps> = ({ className = '' }) => {
 
     } catch (err) {
       console.error('Error fetching likes via HTTP:', err);
+
+      // If the error is an AbortError (timeout), try one more time without AbortController
+      if (err instanceof Error && err.name === 'AbortError') {
+        console.log('Timeout occurred, trying one more time without timeout...');
+        try {
+          // One more attempt without AbortController
+          const lastAttemptResponse = await fetch(`${API_URL}/api/likes`, {
+            method: 'GET'
+          });
+
+          if (lastAttemptResponse.ok) {
+            const lastAttemptData = await lastAttemptResponse.json();
+            console.log('Successfully fetched likes on last attempt:', lastAttemptData);
+            setLikes(lastAttemptData.count);
+            localStorage.setItem('portfolio_likes', String(lastAttemptData.count));
+            setIsLoading(false);
+            return; // Exit early if successful
+          }
+        } catch (finalErr) {
+          console.error('Final attempt to fetch likes failed:', finalErr);
+        }
+      }
+
       setError('Failed to load likes');
 
-      // Fallback to localStorage if API fails
+      // Fallback to localStorage if all API attempts fail
       try {
         const storedLikes = localStorage.getItem('portfolio_likes');
         if (storedLikes) {
@@ -290,9 +406,9 @@ const LikeButton: React.FC<LikeButtonProps> = ({ className = '' }) => {
 
       console.log(`Sending like via HTTP to: ${API_URL}/api/likes`);
 
-      // Call backend API to add like with timeout
+      // Call backend API to add like with a longer timeout
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout for slower connections
 
       const response = await fetch(`${API_URL}/api/likes`, {
         method: 'POST',
@@ -307,10 +423,27 @@ const LikeButton: React.FC<LikeButtonProps> = ({ className = '' }) => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to add like');
+        // If the server says we've already liked, update our state to reflect that
+        if (data.message && data.message.includes('already liked')) {
+          console.log('Server reports you have already liked this portfolio');
+          if (data.ip) {
+            console.log(`Server identified your IP as: ${data.ip}`);
+          }
+          // Don't throw an error, just update the state
+          setHasLiked(true);
+          localStorage.setItem('portfolio_user_liked', 'true');
+          return; // Exit early
+        } else {
+          throw new Error(data.message || 'Failed to add like');
+        }
       }
 
       console.log('Successfully added like:', data);
+
+      // Log the IP address for debugging
+      if (data.ip) {
+        console.log(`Server identified your IP as: ${data.ip}`);
+      }
 
       // Update with actual count from server
       setLikes(data.count);
@@ -327,6 +460,33 @@ const LikeButton: React.FC<LikeButtonProps> = ({ className = '' }) => {
 
     } catch (err) {
       console.error('Error adding like:', err);
+
+      // If the error is an AbortError (timeout), try one more time without AbortController
+      if (err instanceof Error && err.name === 'AbortError') {
+        console.log('Timeout occurred when adding like, trying one more time without timeout...');
+        try {
+          // One more attempt without AbortController
+          const lastAttemptResponse = await fetch(`${API_URL}/api/likes`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+
+          if (lastAttemptResponse.ok) {
+            const lastAttemptData = await lastAttemptResponse.json();
+            console.log('Successfully added like on last attempt:', lastAttemptData);
+            setLikes(lastAttemptData.count);
+            localStorage.setItem('portfolio_likes', String(lastAttemptData.count));
+            localStorage.setItem('portfolio_user_liked', 'true');
+            setIsLoading(false);
+            return; // Exit early if successful
+          }
+        } catch (finalErr) {
+          console.error('Final attempt to add like failed:', finalErr);
+        }
+      }
+
       // Revert optimistic update on error
       setLikes((prevLikes) => prevLikes - 1);
       setHasLiked(false);

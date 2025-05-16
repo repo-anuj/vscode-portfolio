@@ -39,6 +39,83 @@ app.get('/health', (_, res) => {
   res.status(200).json({ status: 'ok', message: 'Server is running' });
 });
 
+// Add a debug endpoint to check IP address
+app.get('/api/debug/ip', (req, res) => {
+  // Get client IP address - handle x-forwarded-for properly
+  let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+
+  // If x-forwarded-for contains multiple IPs, take the first one (client's real IP)
+  if (ip && ip.includes(',')) {
+    ip = ip.split(',')[0].trim();
+  }
+
+  // Return all headers for debugging
+  res.json({
+    ip: ip,
+    headers: req.headers,
+    rawIp: req.socket.remoteAddress,
+    forwardedFor: req.headers['x-forwarded-for']
+  });
+});
+
+// Add a debug endpoint to view all likes in the database
+app.get('/api/debug/likes', async (_, res) => {
+  try {
+    // Get all likes from the database
+    const allLikes = await Like.find({}).lean();
+
+    // Count total likes
+    const count = await Like.countDocuments();
+
+    // Return the data
+    res.json({
+      success: true,
+      count: count,
+      likes: allLikes
+    });
+  } catch (error) {
+    console.error('Error fetching all likes:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch likes'
+    });
+  }
+});
+
+// Add a debug endpoint to clear all likes (for testing purposes)
+// Only available in development mode
+app.delete('/api/debug/likes', async (_, res) => {
+  // Only allow this in development mode
+  if (process.env.NODE_ENV === 'production') {
+    return res.status(403).json({
+      success: false,
+      message: 'This endpoint is only available in development mode'
+    });
+  }
+
+  try {
+    // Delete all likes from the database
+    const result = await Like.deleteMany({});
+
+    // Emit WebSocket event to all connected clients
+    const newCount = await Like.countDocuments();
+    io.emit('like-update', { count: newCount });
+
+    // Return the result
+    res.json({
+      success: true,
+      message: `Deleted ${result.deletedCount} likes`,
+      count: newCount
+    });
+  } catch (error) {
+    console.error('Error clearing likes:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to clear likes'
+    });
+  }
+});
+
 // MongoDB connection with improved error handling and reconnection logic
 console.log('Connecting to MongoDB...');
 const connectWithRetry = () => {
@@ -120,14 +197,31 @@ app.get('/api/likes', async (_, res) => {
 // Check if IP has already liked
 app.get('/api/likes/check', async (req, res) => {
   try {
-    // Get client IP address
-    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    // Get client IP address - handle x-forwarded-for properly
+    let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+
+    // If x-forwarded-for contains multiple IPs, take the first one (client's real IP)
+    if (ip && ip.includes(',')) {
+      ip = ip.split(',')[0].trim();
+    }
+
+    console.log(`Checking like status for IP: ${ip}`);
 
     const existingLike = await Like.findOne({ ipAddress: ip });
 
+    // Log the result for debugging
+    console.log(`Like status for IP ${ip}: ${!!existingLike ? 'Has liked' : 'Has not liked'}`);
+
+    // If we're in development mode, log all likes for debugging
+    if (process.env.NODE_ENV !== 'production') {
+      const allLikes = await Like.find({}).lean();
+      console.log('All likes in database:', allLikes);
+    }
+
     res.json({
       success: true,
-      hasLiked: !!existingLike
+      hasLiked: !!existingLike,
+      ip: ip // Include the IP in the response for debugging
     });
   } catch (error) {
     console.error('Error checking if IP has liked:', error);
@@ -141,24 +235,38 @@ app.get('/api/likes/check', async (req, res) => {
 // Add a new like
 app.post('/api/likes', async (req, res) => {
   try {
-    // Get client IP address
-    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    // Get client IP address - handle x-forwarded-for properly
+    let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+
+    // If x-forwarded-for contains multiple IPs, take the first one (client's real IP)
+    if (ip && ip.includes(',')) {
+      ip = ip.split(',')[0].trim();
+    }
+
+    console.log(`Adding like for IP: ${ip}`);
 
     // Check if IP has already liked
     const existingLike = await Like.findOne({ ipAddress: ip });
 
+    // Log the result for debugging
+    console.log(`Like check for IP ${ip}: ${existingLike ? 'Already liked' : 'Not liked yet'}`);
+
     if (existingLike) {
+      console.log(`Rejected duplicate like from IP: ${ip}`);
       return res.status(400).json({
         success: false,
-        message: 'You have already liked this portfolio'
+        message: 'You have already liked this portfolio',
+        ip: ip // Include the IP in the response for debugging
       });
     }
 
     // Add new like
-    await Like.create({ ipAddress: ip });
+    const newLike = await Like.create({ ipAddress: ip });
+    console.log(`Added new like for IP: ${ip}, document ID: ${newLike._id}`);
 
     // Get updated count
     const count = await Like.countDocuments();
+    console.log(`New total like count: ${count}`);
 
     // Emit WebSocket event to all connected clients
     io.emit('like-update', { count });
@@ -166,7 +274,8 @@ app.post('/api/likes', async (req, res) => {
     res.json({
       success: true,
       message: 'Like added successfully',
-      count: count
+      count: count,
+      ip: ip // Include the IP in the response for debugging
     });
   } catch (error) {
     console.error('Error adding like:', error);
