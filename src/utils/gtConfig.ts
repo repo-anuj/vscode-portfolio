@@ -9,29 +9,40 @@
  * Instead, we only provide the projectId and let the GT library handle the rest.
  */
 
+// Create separate configurations for development and production
+const developmentConfig = {
+  locales: ["en", "es", "fr", "de", "zh"],
+  defaultLocale: "en",
+  apiKey: import.meta.env.VITE_GT_API_KEY || '',
+  projectId: import.meta.env.VITE_GT_PROJECT_ID || '',
+  debug: true
+};
+
+const productionConfig = {
+  locales: ["en", "es", "fr", "de", "zh"],
+  defaultLocale: "en",
+  projectId: import.meta.env.VITE_GT_PROJECT_ID || '',
+  debug: false
+};
+
 // Create a configuration object for GT
 export const getGTConfig = () => {
-  // Get environment variables with fallbacks
-  const apiKey = import.meta.env.VITE_GT_API_KEY || '';
-  const projectId = import.meta.env.VITE_GT_PROJECT_ID || '';
-
-  // Check if we're in production
+  // Determine if we're in production
   const isProduction = import.meta.env.PROD;
 
-  // Log warning if environment variables are missing in development
-  if (!isProduction && (!apiKey || !projectId)) {
-    console.warn('GT environment variables are missing. Translation features may not work properly.');
-    console.warn('Make sure VITE_GT_API_KEY and VITE_GT_PROJECT_ID are set in your .env file.');
-  }
+  // Use the appropriate configuration based on environment
+  if (isProduction) {
+    console.log('Using production GT configuration (no API key)');
+    return productionConfig;
+  } else {
+    // Check if development config has valid values
+    if (!developmentConfig.apiKey || !developmentConfig.projectId) {
+      console.warn('GT environment variables are missing. Translation features may not work properly.');
+      console.warn('Make sure VITE_GT_API_KEY and VITE_GT_PROJECT_ID are set in your .env file.');
+    }
 
-  // In production, we don't include the API key as it's a security risk
-  return {
-    locales: ["en", "es", "fr", "de", "zh"],
-    defaultLocale: "en",
-    // Only include apiKey in development
-    ...(isProduction ? {} : { apiKey }),
-    projectId,
-    debug: !isProduction // Only enable debug in development
+    console.log('Using development GT configuration');
+    return developmentConfig;
   }
 }
 
