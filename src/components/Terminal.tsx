@@ -981,14 +981,14 @@ const Terminal = ({ onClose, startContactForm, className = '', onLaunchCodePlayg
 
       case 3: // Message entered
         if (input.trim().length < 10) {
-          output = ( 
+          output = (
             <div className="text-yellow-400">
               <p>⚠️ Please enter a more detailed message (at least 10 characters).</p>
               <p className="text-white/60 mt-1">A detailed message helps me understand your needs better.</p>
             </div>
           );
         } else if (input.trim().length > 1000) {
-          output = ( 
+          output = (
             <div className="text-yellow-400">
               <p>⚠️ Your message is too long (maximum 1000 characters).</p>
               <p className="text-white/60 mt-1">Current length: {input.trim().length} characters. Please be more concise.</p>
@@ -1010,7 +1010,7 @@ const Terminal = ({ onClose, startContactForm, className = '', onLaunchCodePlayg
     const { name, email, message } = contactForm;
     if (!name || !email || !message) {
       setLines((prev) => [...prev, {
-        output: ( 
+        output: (
           <div className="text-yellow-400">
             <p>⚠️ Please fill in all fields before submitting.</p>
             <p className="text-white/60 mt-1">All information is required to process your message.</p>
@@ -1022,7 +1022,7 @@ const Terminal = ({ onClose, startContactForm, className = '', onLaunchCodePlayg
 
     setIsSubmitting(true);
     setLines((prev) => [...prev, {
-      output: ( 
+      output: (
         <div className="animate-pulse">
           <p>📤 Sending your message...</p>
           <div className="mt-2 flex space-x-1">
@@ -1056,7 +1056,7 @@ const Terminal = ({ onClose, startContactForm, className = '', onLaunchCodePlayg
       await new Promise((resolve) => setTimeout(resolve, 800));
 
       setLines((prev) => [...prev, {
-        output: ( 
+        output: (
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center">
@@ -1093,7 +1093,7 @@ const Terminal = ({ onClose, startContactForm, className = '', onLaunchCodePlayg
     } catch (error) {
       console.error('Email sending failed:', error);
       setLines((prev) => [...prev, {
-        output: ( 
+        output: (
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-red-400">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -1268,7 +1268,7 @@ const Terminal = ({ onClose, startContactForm, className = '', onLaunchCodePlayg
     setLines((prev) => [...prev, { input, output }]);
   };
 
-  return ( 
+  return (
     <div
       className={`${className} fixed bottom-0 left-0 right-0 bg-[#1e1e1e] border-t border-[#2d2d2d] flex flex-col z-50 transition-all duration-200`}
       style={{
@@ -1348,7 +1348,7 @@ const Terminal = ({ onClose, startContactForm, className = '', onLaunchCodePlayg
       {/* Terminal Content */}
       <div
         ref={terminalRef}
-        className="flex-1 p-4 font-mono text-sm"
+        className="flex-1 p-4 font-mono text-sm overflow-auto"
         onClick={() => inputRef.current?.focus()}
         role="log"
         aria-live="polite"
@@ -1356,7 +1356,7 @@ const Terminal = ({ onClose, startContactForm, className = '', onLaunchCodePlayg
 
         {lines.map((line, i) => (
           <div key={i} className="mb-2 leading-relaxed">
-            {line.input !== undefined && ( 
+            {line.input !== undefined && (
               <div className="flex items-center gap-2 text-white/80 select-text">
                 <span className="text-green-400 whitespace-nowrap">portfolio@user</span>
                 <span className="text-white/40">:</span>
