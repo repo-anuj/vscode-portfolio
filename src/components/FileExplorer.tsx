@@ -1,7 +1,7 @@
 import { ChevronDown, ChevronRight, Folder, FileText, Home, User, Briefcase, Code, FolderGit } from 'lucide-react';
 import { useState } from 'react';
 import { FileItem, FolderItem } from '../types';
-import { Var, T } from "gt-react";
+
 
 
 const portfolioStructure: FolderItem = {
@@ -96,7 +96,7 @@ const FileExplorer = ({ onFileClick, isOpen = true, onClose }: FileExplorerProps
     );
   };
 
-  return (<T id="components.fileexplorer.0">
+  return (
     <div className={`
       ${isOpen ? 'w-[240px]' : 'w-0 md:w-0'}
       fixed md:relative
@@ -123,9 +123,9 @@ const FileExplorer = ({ onFileClick, isOpen = true, onClose }: FileExplorerProps
         ${!isOpen && 'hidden'}
         min-h-[calc(100vh-80px)]
       `}>
-        <Var>{renderItem(structure)}</Var>
+        {renderItem(structure)}
       </div>
-    </div></T>
+    </div>
   );
 };
 

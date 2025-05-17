@@ -7,8 +7,6 @@ import ScrollTrigger from 'gsap/ScrollTrigger';
 // import '@fontsource/space-grotesk'
 // import '@fontsource/inter'
 
-import { Var, T } from "gt-react";
-
 gsap.registerPlugin(ScrollTrigger);
 
 const Work = () => {
@@ -153,7 +151,7 @@ const Work = () => {
   }];
 
 
-  return (<T id="pages.work.0">
+  return (
     <div ref={containerRef} className="relative w-full h-full bg-vscode-editor">
       {/* Background Elements */}
       <div className="absolute inset-0 pointer-events-none">
@@ -191,7 +189,7 @@ const Work = () => {
 
           {/* Work Items */}
           <div className="space-y-8 sm:space-y-12 md:space-y-16 relative">
-            <Var>{workExperience.map((work, index) => (<T id="pages.work.2">
+            {workExperience.map((work, index) => (
                 <motion.div
                   key={work.title}
                   initial={{ opacity: 0, x: -20 }}
@@ -213,18 +211,18 @@ const Work = () => {
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4 mb-4">
                     <div>
                       <h3 className="text-lg sm:text-xl text-white font-['Space_Grotesk'] mb-2 flex flex-wrap items-center gap-2">
-                        <span className="mr-1"><Var>{work.title}</Var></span>
+                        <span className="mr-1">{work.title}</span>
                         <ChevronRight size={18} className="text-vscode-accent transition-transform group-hover:translate-x-1 hidden sm:block" />
-                        <span className="text-vscode-accent"><Var>{work.company}</Var></span>
+                        <span className="text-vscode-accent">{work.company}</span>
                       </h3>
                       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 text-white/60 text-xs sm:text-sm font-['Inter']">
                         <span className="flex items-center gap-1">
                           <Calendar size={14} />
-                          <Var>{work.period}</Var>
+                          {work.period}
                         </span>
                         <span className="flex items-center gap-1">
                           <Briefcase size={14} />
-                          <Var>{work.location}</Var>
+                          {work.location}
                         </span>
                       </div>
                     </div>
@@ -232,7 +230,7 @@ const Work = () => {
 
                   {/* Brief Summary */}
                   <div className="mb-3 text-white/70 text-sm">
-                    <p><Var>{work.description[0].split('.')[0]}</Var>.</p>
+                    <p>{work.description[0].split('.')[0]}.</p>
                   </div>
 
                   {/* Collapsible Details */}
@@ -263,32 +261,32 @@ const Work = () => {
                           <div className="h-px bg-vscode-accent/30 flex-1"></div>
                         </h4>
                         <ul className="space-y-2 text-white/70 text-sm sm:text-base">
-                          <Var>{work.description.map((item, i) => (
+                          {work.description.map((item, i) => (
                               <li key={i} className="flex items-start">
                               <ChevronRight size={16} className="text-vscode-accent mt-1 shrink-0" />
                               <span className="ml-2">{item}</span>
                             </li>
-                              ))}</Var>
+                              ))}
                         </ul>
                       </div>
 
                       {/* Achievements */}
-                      <Var>{work.achievements && (<T id="pages.work.1">
+                      {work.achievements && (
                             <div className="mb-4">
                           <h4 className="text-white/90 text-sm font-medium mb-2 flex items-center gap-2">
                             <span className="text-vscode-accent">Key Achievements</span>
                             <div className="h-px bg-vscode-accent/30 flex-1"></div>
                           </h4>
                           <ul className="space-y-2 text-white/70 text-sm sm:text-base">
-                            <Var>{work.achievements.map((achievement, i) => (
+                            {work.achievements.map((achievement, i) => (
                                   <li key={i} className="flex items-start">
                                 <span className="text-green-400 font-bold mr-2">✓</span>
                                 <span>{achievement}</span>
                               </li>
-                                  ))}</Var>
+                                  ))}
                           </ul>
-                        </div></T>
-                          )}</Var>
+                        </div>
+                          )}
                     </div>
                   </details>
 
@@ -296,7 +294,7 @@ const Work = () => {
                   <div className="mt-4">
                     <h4 className="text-white/90 text-xs font-medium mb-2">Technologies & Skills</h4>
                     <div className="flex flex-wrap gap-2">
-                      <Var>{work.technologies.map((tech, i) => (
+                      {work.technologies.map((tech, i) => (
                           <span
                             key={i}
                             className="tech-badge px-2 py-1 text-xs rounded-md bg-vscode-accent/10 text-vscode-accent
@@ -305,16 +303,16 @@ const Work = () => {
                             
                           {tech}
                         </span>
-                          ))}</Var>
+                          ))}
                     </div>
                   </div>
                 </div>
-              </motion.div></T>
-              ))}</Var>
+              </motion.div>
+              ))}
           </div>
         </div>
       </div>
-    </div></T>
+    </div>
   );
 };
 

@@ -11,8 +11,6 @@ import ScrollTrigger from 'gsap/ScrollTrigger';
 // import '@fontsource/space-grotesk'
 // import '@fontsource/inter'
 
-import { Var, T } from "gt-react";
-
 gsap.registerPlugin(ScrollTrigger);
 
 const Profile = () => {
@@ -135,7 +133,7 @@ const Profile = () => {
   }];
 
 
-  return (<T id="pages.profile.0">
+  return (
     <motion.div
       ref={containerRef}
       initial={{ opacity: 0 }}
@@ -199,7 +197,7 @@ const Profile = () => {
             
             <h3 className="text-vscode-accent text-sm font-medium mb-3 text-center">Connect with me</h3>
             <div className="flex justify-center flex-wrap gap-3">
-              <Var>{[
+              {[
                 {
                   icon: Mail,
                   href: 'mailto:anuj.dubey@example.com',
@@ -248,7 +246,7 @@ const Profile = () => {
                   <social.icon className="w-4 h-4" />
                   <span className="text-sm font-medium">{social.label}</span>
                 </motion.a>
-                ))}</Var>
+                ))}
             </div>
 
             {/* Social Stats */}
@@ -276,14 +274,14 @@ const Profile = () => {
 
         {/* Enhanced Decorative Elements */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <Var>{[Code2, Layers].map((Icon, index) => (
+          {[Code2, Layers].map((Icon, index) => (
             <Icon
               key={index}
               className={`floating-icon absolute text-vscode-accent/20 w-16 h-16
                 ${index % 2 ? 'left-[10%]' : 'right-[10%]'}
                 top-[${(index * 30) + 20}%]`} />
 
-            ))}</Var>
+            ))}
           <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-vscode-accent/5 rounded-full blur-3xl" />
           <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-purple-500/5 rounded-full blur-3xl" />
         </div>
@@ -331,7 +329,7 @@ const Profile = () => {
               Education
             </h2>
             <div className="space-y-6">
-              <Var>{education.map((edu) => (<T id="pages.profile.1">
+              {education.map((edu) => (
                   <motion.div
                     key={edu.degree}
                     whileHover={{ scale: 1.02, backgroundColor: 'rgba(255,255,255,0.08)' }}
@@ -342,15 +340,15 @@ const Profile = () => {
 
                     
                   <div>
-                    <h3 className="text-white font-bold mb-1 font-['Space_Grotesk']"><Var>{edu.school}</Var></h3>
-                    <p className="text-white/60 text-sm font-['Inter']"><Var>{edu.degree}</Var></p>
+                    <h3 className="text-white font-bold mb-1 font-['Space_Grotesk']">{edu.school}</h3>
+                    <p className="text-white/60 text-sm font-['Inter']">{edu.degree}</p>
                   </div>
                   <div className="mt-2 sm:mt-0 text-right">
-                    <span className="text-vscode-accent font-['Fira_Code']"><Var>{edu.year}</Var></span>
-                    <p className="text-white/60 text-sm font-['Inter']">Score: <Var>{edu.score}</Var></p>
+                    <span className="text-vscode-accent font-['Fira_Code']">{edu.year}</span>
+                    <p className="text-white/60 text-sm font-['Inter']">Score: {edu.score}</p>
                   </div>
-                </motion.div></T>
-                ))}</Var>
+                </motion.div>
+                ))}
             </div>
           </motion.section>
 
@@ -371,7 +369,7 @@ const Profile = () => {
               Certifications
             </h2>
             <div className="certs-grid grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Var>{certifications.map((cert) => (
+              {certifications.map((cert) => (
                 <motion.div
                   key={cert.title}
                   className="cert-card p-4 bg-white/5 rounded-lg hover:bg-white/10
@@ -383,7 +381,7 @@ const Profile = () => {
                   <p className="text-white/60 text-sm font-['Inter']">{cert.issuer}</p>
                   <p className="text-vscode-accent/80 text-sm font-['Fira_Code'] mt-2">{cert.date}</p>
                 </motion.div>
-                ))}</Var>
+                ))}
             </div>
           </motion.section>
 
@@ -404,7 +402,7 @@ const Profile = () => {
               Technical Skills
             </h2>
             <div className="skills-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              <Var>{[
+              {[
                 'React', 'TypeScript', 'Node.js', 'Next.js',
                 'Tailwind CSS', 'MongoDB', 'Git', 'RESTful APIs',
                 'Framer Motion', 'Redux', 'Express.js', 'PostgreSQL'].
@@ -428,12 +426,12 @@ const Profile = () => {
                   
                   {skill}
                 </motion.div>
-                ))}</Var>
+                ))}
             </div>
           </motion.section>
         </div>
       </div>
-    </motion.div></T>
+    </motion.div>
   );
 };
 

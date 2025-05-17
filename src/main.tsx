@@ -5,11 +5,9 @@ import './index.css'
 import './styles/responsive.css'
 import App from './App.tsx'
 import { ThemeProvider } from './contexts/ThemeContext'
-import { LanguageProvider } from './contexts/LanguageContext'
 import ErrorBoundary from './components/ErrorBoundary'
 import { initFontLoading } from './utils/fontLoader'
 import { initThemeLoading } from './utils/themeLoader'
-import GTWrapper from './components/GTWrapper'
 
 // Initialize font loading
 initFontLoading()
@@ -21,12 +19,8 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary>
       <ThemeProvider>
-        <LanguageProvider>
-          <GTWrapper>
-            <App />
-            <Analytics />
-          </GTWrapper>
-        </LanguageProvider>
+        <App />
+        <Analytics />
       </ThemeProvider>
     </ErrorBoundary>
   </StrictMode>,

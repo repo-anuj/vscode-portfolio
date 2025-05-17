@@ -3,7 +3,6 @@ import { Github as GithubIcon, FileText, Menu, Search } from 'lucide-react';
 /**
  * Props for the Header component
  */
-import { Var, T } from "gt-react";
 
 interface HeaderProps {
   /** Handler for menu button click */
@@ -42,7 +41,7 @@ const Header: React.FC<HeaderProps> = ({
     document.body.removeChild(link);
   };
 
-  return (<T id="components.header.0">
+  return (
     <header className={`h-12 bg-vscode-titlebar flex items-center justify-between px-4 select-none ${className}`}>
       {/* Left side - VS Code Logo */}
       <div className="flex items-center">
@@ -70,7 +69,7 @@ const Header: React.FC<HeaderProps> = ({
           
           <GithubIcon size={20} />
         </a>
-        <Var>{onSearchClick && (
+        {onSearchClick && (
           <button
             onClick={onSearchClick}
             className="text-gray-400 hover:text-white transition-colors p-2 rounded-md hover:bg-white/10"
@@ -78,7 +77,7 @@ const Header: React.FC<HeaderProps> = ({
             
             <Search size={20} />
           </button>
-          )}</Var>
+          )}
         <button
           onClick={handleResumeClick}
           className="sm:flex items-center gap-1 text-gray-400 hover:text-white transition-colors p-2 rounded-md hover:bg-white/10 group"
@@ -100,7 +99,7 @@ const Header: React.FC<HeaderProps> = ({
           <Menu size={20} />
         </button>
       </div>
-    </header></T>
+    </header>
   );
 };
 

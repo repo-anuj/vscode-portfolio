@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Heart } from 'lucide-react';
 import { io, Socket } from 'socket.io-client';
-import useSafeGT from '../hooks/useSafeGT';
 
 // API URL - Always use environment variable if available, regardless of environment
 // Add VITE_BACKEND_URL to your .env file (e.g., VITE_BACKEND_URL=https://your-api-domain.com)
@@ -43,8 +42,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ className = '' }) => {
   const [error, setError] = useState<string | null>(null);
   const [socketConnected, setSocketConnected] = useState<boolean>(false);
   const socketRef = useRef<Socket | null>(null);
-  // Use safe GT components
-  const { T } = useSafeGT();
+
 
   // Setup WebSocket connection with improved reconnection logic
   useEffect(() => {
@@ -525,8 +523,8 @@ const LikeButton: React.FC<LikeButtonProps> = ({ className = '' }) => {
       <div className="text-xs text-white/60 font-medium">
         {isLoading ? (
       <span className="inline-block w-4 h-4 border-2 border-white/20 border-t-white/60 rounded-full animate-spin"></span>
-      ) : error ? (<T id="components.likebutton.0">
-        <span className="text-red-400 text-xs">Error</span></T>
+      ) : error ? (
+        <span className="text-red-400 text-xs">Error</span>
       ) : (
       <span>{likes}</span>
       )}

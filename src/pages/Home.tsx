@@ -6,7 +6,7 @@ import Typed from 'typed.js'
 import my from '../assets/my.jpg';
 import OptimizedImage from '../components/OptimizedImage'
 import { getAnimationSettings, optimizeGSAP, getOptimizedVariants } from '../utils/animationUtils'
-import { useGT } from 'gt-react'
+
 // import '@fontsource/fira-code'
 // import '@fontsource/space-grotesk'
 // import '@fontsource/inter'
@@ -18,7 +18,7 @@ interface HomeProps {
 const Home: React.FC<HomeProps> = ({ onContactClick }) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const typedRef = useRef<HTMLSpanElement>(null)
-  const t = useGT()
+  const t = (text: string) => text
 
   useEffect(() => {
     // Get animation settings based on device capabilities
@@ -122,10 +122,10 @@ const Home: React.FC<HomeProps> = ({ onContactClick }) => {
               })}
               className="text-base lg:text-lg text-white/70 font-['Inter'] leading-relaxed max-w-xl"
             >
-              
+
                 A passionate full-stack developer who loves to create elegant solutions
                 with clean, efficient code. Focused on building exceptional digital experiences.
-              
+
             </motion.p>
 
             {/* CTA Buttons */}

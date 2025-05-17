@@ -5,7 +5,7 @@ import { FileItem } from '../types';
 /**
  * Props for the SearchPanel component
  */
-import { T, Var } from "gt-react";
+
 
 interface SearchPanelProps {
   /** Whether the search panel is open */
@@ -197,7 +197,7 @@ const SearchPanel: React.FC<SearchPanelProps> = ({
 
   if (!isOpen) return null;
 
-  return (<T id="components.searchpanel.2">
+  return (
     <div className={`w-[300px] h-full bg-vscode-sidebar border-l border-[#1e1e1e] flex flex-col z-50 ${className}`}>
       {/* Header */}
       <div className="flex items-center justify-between p-2 border-b border-[#3c3c3c]">
@@ -222,47 +222,47 @@ const SearchPanel: React.FC<SearchPanelProps> = ({
             placeholder="Search..."
             className="w-full bg-transparent border-none outline-none py-1 text-sm text-white/90 placeholder-white/40" />
 
-          <Var>{searchTerm && (
+          {searchTerm && (
             <button
               onClick={() => setSearchTerm('')}
               className="text-white/40 hover:text-white/60">
 
               <X size={14} />
             </button>
-            )}</Var>
+            )}
         </div>
       </div>
 
       {/* Results */}
       <div className="flex-1 overflow-y-auto">
-        <Var>{isSearching ? (<T id="components.searchpanel.0">
+        {isSearching ? (
             <div className="flex items-center justify-center h-16 text-white/40">
             <div className="animate-spin mr-2 h-4 w-4 border-2 border-white/10 border-t-white/40 rounded-full"></div>
             <span className="text-sm">Searching...</span>
-          </div></T>
-          ) : searchTerm && results.length === 0 ? (<T id="components.searchpanel.1">
+          </div>
+          ) : searchTerm && results.length === 0 ? (
             <div className="p-4 text-white/40 text-center text-sm">
-            No results found for "<Var>{searchTerm}</Var>"
-          </div></T>
+            No results found for "{searchTerm}"
+          </div>
           ) : (
           <div className="divide-y divide-[#3c3c3c]/30">
-            {results.map((result) => (<T id="components.searchpanel.3">
+            {results.map((result) => (
               <div key={result.file.path} className="py-2">
                 <div
                   className="flex items-center px-2 py-1 hover:bg-[#2a2d2e] cursor-pointer"
                   onClick={() => toggleFileExpanded(result.file.path)}>
 
-                  <Var>{expandedFiles.has(result.file.path) ? (
+                  {expandedFiles.has(result.file.path) ? (
                     <ArrowDown size={14} className="text-white/60 mr-1" />
                     ) : (
                     <ChevronRight size={14} className="text-white/60 mr-1" />
-                    )}</Var>
+                    )}
                   <FileText size={14} className="text-[#519aba] mr-2" />
-                  <span className="text-sm text-white/80"><Var>{result.file.name}</Var></span>
-                  <span className="ml-auto text-xs text-white/40"><Var>{result.matches.length}</Var> matches</span>
+                  <span className="text-sm text-white/80">{result.file.name}</span>
+                  <span className="ml-auto text-xs text-white/40">{result.matches.length} matches</span>
                 </div>
 
-                <Var>{expandedFiles.has(result.file.path) && (
+                {expandedFiles.has(result.file.path) && (
                   <div className="ml-6 mt-1">
                     {result.matches.map((match, idx) => (
                     <div
@@ -275,17 +275,17 @@ const SearchPanel: React.FC<SearchPanelProps> = ({
                       </div>
                     ))}
                   </div>
-                  )}</Var>
-              </div></T>
+                  )}
+              </div>
             ))}
           </div>
-          )}</Var>
+          )}
       </div>
 
       {/* Footer */}
       <div className="p-2 border-t border-[#3c3c3c] flex justify-between text-xs text-white/60">
         <div className="flex items-center">
-          <span className="mr-4"><Var>{results.length}</Var> results</span>
+          <span className="mr-4">{results.length} results</span>
           <button className="flex items-center mr-2 hover:text-white/80">
             <ArrowUp size={12} className="mr-1" />
             Previous
@@ -296,7 +296,7 @@ const SearchPanel: React.FC<SearchPanelProps> = ({
           </button>
         </div>
       </div>
-    </div></T>
+    </div>
   );
 };
 

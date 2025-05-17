@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Shuffle, RefreshCw, Clock, Award, ChevronUp } from 'lucide-react';
-import { Var, T } from "gt-react";
 
 
 interface Card {
@@ -34,7 +33,7 @@ const MemoryGame: React.FC = () => {
 
   // Initialize game
   const initializeGame = () => {
-    // Create pairs of cards with the same icon
+    // Create pairs of cards with icons
     const cardPairs = [...TECH_ICONS, ...TECH_ICONS].map((icon, index) => ({
       id: index,
       icon,
@@ -43,118 +42,16 @@ const MemoryGame: React.FC = () => {
     }));
 
     // Shuffle cards
-    const shuffledCards = shuffleCards(cardPairs);
-
+    const shuffledCards = shuffleArray(cardPairs);
+    
     setCards(shuffledCards);
     setFlippedCards([]);
     setMatchedPairs(0);
     setMoves(0);
-    setTimer(0);
     setGameStarted(false);
     setGameCompleted(false);
+    setTimer(0);
   };
-
-  // Shuffle cards using Fisher-Yates algorithm
-  const shuffleCards = (cards: Card[]): Card[] => {
-    const shuffled = [...cards];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled;
-  };
-
-  // Handle card click
-  const handleCardClick = (id: number) => {
-    // Ignore clicks if game is completed or card is already flipped/matched
-    if (
-    gameCompleted ||
-    flippedCards.length >= 2 ||
-    cards.find((card) => card.id === id)?.flipped ||
-    cards.find((card) => card.id === id)?.matched)
-    {
-      return;
-    }
-
-    // Start game on first card click
-    if (!gameStarted) {
-      setGameStarted(true);
-    }
-
-    // Flip the card
-    setCards((prevCards) =>
-    prevCards.map((card) =>
-    card.id === id ? { ...card, flipped: true } : card
-    )
-    );
-
-    // Add card to flipped cards
-    setFlippedCards((prev) => [...prev, id]);
-  };
-
-  // Check for matches when two cards are flipped
-  useEffect(() => {
-    if (flippedCards.length === 2) {
-      setMoves((prev) => prev + 1);
-
-      const [firstId, secondId] = flippedCards;
-      const firstCard = cards.find((card) => card.id === firstId);
-      const secondCard = cards.find((card) => card.id === secondId);
-
-      if (firstCard?.icon === secondCard?.icon) {
-        // Match found
-        setCards((prevCards) =>
-        prevCards.map((card) =>
-        card.id === firstId || card.id === secondId ?
-        { ...card, matched: true, flipped: false } :
-        card
-        )
-        );
-        setMatchedPairs((prev) => prev + 1);
-        setFlippedCards([]);
-      } else {
-        // No match, flip cards back after delay
-        setTimeout(() => {
-          setCards((prevCards) =>
-          prevCards.map((card) =>
-          card.id === firstId || card.id === secondId ?
-          { ...card, flipped: false } :
-          card
-          )
-          );
-          setFlippedCards([]);
-        }, 1000);
-      }
-    }
-  }, [flippedCards, cards]);
-
-  // Check if game is completed
-  useEffect(() => {
-    if (matchedPairs === TECH_ICONS.length && gameStarted) {
-      setGameCompleted(true);
-
-      // Update best score
-      if (bestScore === null || moves < bestScore) {
-        setBestScore(moves);
-        localStorage.setItem('memoryGameBestScore', moves.toString());
-      }
-    }
-  }, [matchedPairs, gameStarted, moves, bestScore]);
-
-  // Timer
-  useEffect(() => {
-    let interval: NodeJS.Timeout | null = null;
-
-    if (gameStarted && !gameCompleted) {
-      interval = setInterval(() => {
-        setTimer((prev) => prev + 1);
-      }, 1000);
-    }
-
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [gameStarted, gameCompleted]);
 
   // Load best score from localStorage
   useEffect(() => {
@@ -162,64 +59,179 @@ const MemoryGame: React.FC = () => {
     if (savedBestScore) {
       setBestScore(parseInt(savedBestScore));
     }
+  }, []);
 
-    // Initialize game on component mount
+  // Initialize game on component mount
+  useEffect(() => {
     initializeGame();
   }, []);
 
-  // Format time as MM:SS
-  const formatTime = (seconds: number): string => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  // Timer logic
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    
+    if (gameStarted && !gameCompleted) {
+      interval = setInterval(() => {
+        setTimer(prev => prev + 1);
+      }, 1000);
+    }
+    
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [gameStarted, gameCompleted]);
+
+  // Check for game completion
+  useEffect(() => {
+    if (matchedPairs === TECH_ICONS.length && gameStarted) {
+      setGameCompleted(true);
+      
+      // Update best score if current score is better or if there's no best score yet
+      if (bestScore === null || moves < bestScore) {
+        setBestScore(moves);
+        localStorage.setItem('memoryGameBestScore', moves.toString());
+      }
+    }
+  }, [matchedPairs, gameStarted, moves, bestScore]);
+
+  // Handle card click
+  const handleCardClick = (id: number) => {
+    // Prevent clicks if:
+    // 1. Card is already flipped or matched
+    // 2. Two cards are already flipped and being checked
+    if (
+      cards.find(card => card.id === id)?.flipped ||
+      cards.find(card => card.id === id)?.matched ||
+      flippedCards.length >= 2
+    ) {
+      return;
+    }
+    
+    // Start game on first card click
+    if (!gameStarted) {
+      setGameStarted(true);
+    }
+    
+    // Flip the card
+    setCards(prev => 
+      prev.map(card => 
+        card.id === id ? { ...card, flipped: true } : card
+      )
+    );
+    
+    // Add card to flipped cards
+    setFlippedCards(prev => [...prev, id]);
+    
+    // If this is the second card flipped
+    if (flippedCards.length === 1) {
+      setMoves(prev => prev + 1);
+      
+      // Get the first flipped card
+      const firstCardId = flippedCards[0];
+      const firstCard = cards.find(card => card.id === firstCardId);
+      const secondCard = cards.find(card => card.id === id);
+      
+      // Check if cards match
+      if (firstCard?.icon === secondCard?.icon) {
+        // Mark cards as matched
+        setCards(prev => 
+          prev.map(card => 
+            card.id === firstCardId || card.id === id
+              ? { ...card, matched: true }
+              : card
+          )
+        );
+        
+        // Increment matched pairs
+        setMatchedPairs(prev => prev + 1);
+        
+        // Reset flipped cards
+        setFlippedCards([]);
+      } else {
+        // If cards don't match, flip them back after a delay
+        setTimeout(() => {
+          setCards(prev => 
+            prev.map(card => 
+              card.id === firstCardId || card.id === id
+                ? { ...card, flipped: false }
+                : card
+            )
+          );
+          
+          // Reset flipped cards
+          setFlippedCards([]);
+        }, 1000);
+      }
+    }
   };
 
-  return (<T id="components.memorygame.4">
-    <div className="h-full w-full flex flex-col p-4 bg-vscode-editor-background">
-      <div className="max-w-2xl mx-auto w-full">
-        {/* Header */}
-        <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between">
-          <h1 className="text-2xl font-bold text-white/90 mb-2 sm:mb-0">Memory Match</h1>
-          <div className="flex space-x-2">
+  // Shuffle array (Fisher-Yates algorithm)
+  const shuffleArray = <T,>(array: T[]): T[] => {
+    const newArray = [...array];
+    for (let i = newArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+    }
+    return newArray;
+  };
+
+  // Format time as MM:SS
+  const formatTime = (seconds: number): string => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
+
+  return (
+    <div className="w-full h-full bg-[#1e1e1e] overflow-auto p-6">
+      <div className="max-w-md mx-auto">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-xl font-bold text-white/90">Memory Match</h1>
+          
+          <div className="flex gap-2">
             <button
-              onClick={() => initializeGame()}
-              className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm flex items-center">
+              onClick={initializeGame}
+              className="p-2 bg-[#2d2d2d] hover:bg-[#3d3d3d] rounded-md transition-colors"
+              title="New Game">
               
-              <RefreshCw size={14} className="mr-1" />
-              New Game
+              <Shuffle size={18} className="text-white/70" />
             </button>
             <button
-              onClick={() => setCards(shuffleCards(cards))}
-              className="px-3 py-1 bg-[#3c3c3c] hover:bg-[#4c4c4c] text-white rounded-md text-sm flex items-center"
-              disabled={gameStarted}>
+              onClick={() => {
+                setCards(shuffleArray(cards));
+                if (!gameStarted) {
+                  setGameStarted(true);
+                }
+              }}
+              className="p-2 bg-[#2d2d2d] hover:bg-[#3d3d3d] rounded-md transition-colors"
+              title="Shuffle Cards">
               
-              <Shuffle size={14} className="mr-1" />
-              Shuffle
+              <RefreshCw size={18} className="text-white/70" />
             </button>
           </div>
         </div>
-        
+
         {/* Game Stats */}
         <div className="relative mb-4">
           <div
             className={`bg-[#2d2d2d] rounded-md p-3 transition-all duration-300 ${
             showStats ? 'max-h-40' : 'max-h-10 overflow-hidden'}`
             }>
-            
+
             <div
               className="flex justify-between items-center cursor-pointer"
               onClick={() => setShowStats(!showStats)}>
-              
+
               <h2 className="text-white/80 font-medium">Game Stats</h2>
               <ChevronUp
                 size={18}
                 className={`text-white/60 transition-transform duration-300 ${
                 showStats ? '' : 'transform rotate-180'}`
                 } />
-              
+
             </div>
-            
-            <Var>{showStats && (<T id="components.memorygame.0">
+
+            {showStats && (
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-3">
                 <div className="bg-[#252525] p-2 rounded-md">
                   <div className="text-xs text-white/60 mb-1 flex items-center">
@@ -227,39 +239,39 @@ const MemoryGame: React.FC = () => {
                     Time
                   </div>
                   <div className="text-lg text-white/90 font-mono">
-                    <Var>{formatTime(timer)}</Var>
+                    {formatTime(timer)}
                   </div>
                 </div>
-                
+
                 <div className="bg-[#252525] p-2 rounded-md">
                   <div className="text-xs text-white/60 mb-1">Moves</div>
-                  <div className="text-lg text-white/90 font-mono"><Var>{moves}</Var></div>
+                  <div className="text-lg text-white/90 font-mono">{moves}</div>
                 </div>
-                
+
                 <div className="bg-[#252525] p-2 rounded-md">
                   <div className="text-xs text-white/60 mb-1">Pairs Found</div>
                   <div className="text-lg text-white/90 font-mono">
-                    <Var>{matchedPairs}</Var>/<Var>{TECH_ICONS.length}</Var>
+                    {matchedPairs}/{TECH_ICONS.length}
                   </div>
                 </div>
-                
+
                 <div className="bg-[#252525] p-2 rounded-md">
                   <div className="text-xs text-white/60 mb-1 flex items-center">
                     <Award size={12} className="mr-1" />
                     Best Score
                   </div>
                   <div className="text-lg text-white/90 font-mono">
-                    <Var>{bestScore !== null ? bestScore : '-'}</Var>
+                    {bestScore !== null ? bestScore : '-'}
                   </div>
                 </div>
-              </div></T>
-              )}</Var>
+              </div>
+              )}
           </div>
         </div>
-        
+
         {/* Game Board */}
         <div className="grid grid-cols-4 gap-3">
-          <Var>{cards.map((card) => (
+          {cards.map((card) => (
             <div
               key={card.id}
               onClick={() => handleCardClick(card.id)}
@@ -273,41 +285,41 @@ const MemoryGame: React.FC = () => {
               style={{
                 perspective: '1000px'
               }}>
-              
+
               {(card.flipped || card.matched) ? (
               <span className="transform rotate-y-180" style={{ fontSize: '2rem' }}>
                   {card.icon}
                 </span>
               ) : null}
             </div>
-            ))}</Var>
+            ))}
         </div>
-        
+
         {/* Game Completed Message */}
-        <Var>{gameCompleted && (<T id="components.memorygame.2">
+        {gameCompleted && (
             <div className="mt-6 bg-[#2d2d2d] rounded-md p-4 text-center animate-fadeIn">
             <h2 className="text-xl font-bold text-white/90 mb-2">
               🎉 Congratulations! 🎉
             </h2>
             <p className="text-white/70 mb-4">
-              You completed the game in <Var>{moves}</Var> moves and <Var>{formatTime(timer)}</Var>!
+              You completed the game in {moves} moves and {formatTime(timer)}!
             </p>
-            <Var>{bestScore === moves && (<T id="components.memorygame.1">
+            {bestScore === moves && (
                   <p className="text-yellow-400 text-sm mb-4">
                 🏆 New Best Score! 🏆
-              </p></T>
-                )}</Var>
+              </p>
+                )}
             <button
                 onClick={() => initializeGame()}
                 className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md">
-                
+
               Play Again
             </button>
-          </div></T>
-          )}</Var>
-        
+          </div>
+          )}
+
         {/* Game Instructions */}
-        <Var>{!gameStarted && !gameCompleted && (<T id="components.memorygame.3">
+        {!gameStarted && !gameCompleted && (
             <div className="mt-6 bg-[#2d2d2d] rounded-md p-4">
             <h2 className="text-lg font-medium text-white/90 mb-2">
               How to Play
@@ -318,10 +330,10 @@ const MemoryGame: React.FC = () => {
               <li>The game is completed when all pairs are matched</li>
               <li>Try to complete the game in as few moves as possible</li>
             </ul>
-          </div></T>
-          )}</Var>
+          </div>
+          )}
       </div>
-    </div></T>
+    </div>
   );
 };
 

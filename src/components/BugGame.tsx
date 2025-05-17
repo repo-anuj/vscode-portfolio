@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Bug, Volume2, VolumeX } from 'lucide-react';
 import ConfettiGenerator from 'confetti-js';
-import { T, Var } from "gt-react";
 
 
 interface BugPosition {
@@ -183,44 +182,44 @@ const BugGame = () => {
     }
   }, [level, playSound, startConfetti]);
 
-  return (<T id="components.buggame.5">
+  return (
     <div className="relative w-full h-full bg-[#1e1e1e] overflow-hidden p-6">
       <canvas
         ref={confettiRef}
         className="fixed inset-0 pointer-events-none z-50"
         style={{ width: '100%', height: '100%' }} />
-      
-      
+
+
       {/* Header */}
       <div className="absolute top-4 right-4 z-10">
         <button
           onClick={() => setIsMuted(!isMuted)}
           className="p-2 hover:bg-[#37373d] rounded-md transition-colors text-white/80">
-          
-          <Var>{isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}</Var>
+
+{isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
         </button>
       </div>
 
       {/* Score Display */}
       <div className="absolute top-4 left-4 text-white/80 space-y-2 bg-[#2d2d2d] p-4 rounded-lg">
-        <div className="text-lg">Score: <Var>{score}</Var></div>
-        <div className="text-lg">High Score: <Var>{highScore}</Var></div>
-        <div className="text-lg">Level: <Var>{level}</Var></div>
-        <div className="text-lg">Time: <Var>{timeLeft}</Var>s</div>
+        <div className="text-lg">Score: {score}</div>
+        <div className="text-lg">High Score: {highScore}</div>
+        <div className="text-lg">Level: {level}</div>
+        <div className="text-lg">Time: {timeLeft}s</div>
       </div>
 
       {/* Bug Legend */}
       <div className="absolute top-4 left-1/2 -translate-x-1/2 flex gap-6 bg-[#2d2d2d] p-4 rounded-lg">
-        <Var>{Object.entries(BUG_SIZES).map(([size, { points, color }]) => (<T id="components.buggame.6">
+        {Object.entries(BUG_SIZES).map(([size, { points, color }]) => (
             <div key={size} className="flex items-center gap-2 text-white/80">
             <Bug style={{ color }} size={16 * (size === 'small' ? 1 : size === 'medium' ? 1.5 : 2)} />
-            <span><Var>{points}</Var> pts</span>
-          </div></T>
-          ))}</Var>
+            <span>{points} pts</span>
+          </div>
+          ))}
       </div>
 
       {/* Bugs */}
-      <Var>{bugs.map((bug) => (
+      {bugs.map((bug) => (
         <button
           key={bug.id}
           className="absolute transition-transform hover:scale-110 active:scale-95"
@@ -234,34 +233,34 @@ const BugGame = () => {
             playSound(shootSound);
             removeBug(bug.id, bug.size);
           }}>
-          
+
           <Bug
             className="transition-colors"
             size={24 * BUG_SIZES[bug.size].scale} />
-          
+
         </button>
-        ))}</Var>
+        ))}
 
       {/* Start/Game Over Screen */}
-      <Var>{!isPlaying && (
+      {!isPlaying && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm">
           <div className="text-center space-y-4">
             <h2 className="text-3xl font-bold text-white">
-              {timeLeft === 0 ? <T id="components.buggame.0">{'Game Over!'}</T> : <T id="components.buggame.1">{'Bug Hunter'}</T>}
+              {timeLeft === 0 ? 'Game Over!' : 'Bug Hunter'}
             </h2>
-            {timeLeft === 0 && (<T id="components.buggame.2">
-              <p className="text-xl text-white">Final Score: <Var>{score}</Var></p></T>
+            {timeLeft === 0 && (
+              <p className="text-xl text-white">Final Score: {score}</p>
             )}
             <button
               onClick={startGame}
               className="px-6 py-2 bg-vscode-accent text-white rounded-md hover:bg-vscode-accent/80 transition-colors">
-              
-              {timeLeft === 0 ? <T id="components.buggame.3">{'Play Again'}</T> : <T id="components.buggame.4">{'Start Game'}</T>}
+
+              {timeLeft === 0 ? 'Play Again' : 'Start Game'}
             </button>
           </div>
         </div>
-        )}</Var>
-    </div></T>
+        )}
+    </div>
   );
 };
 

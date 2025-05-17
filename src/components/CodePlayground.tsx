@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Play, RefreshCw, Copy, Check, X, Download } from 'lucide-react';
-import { T, Var } from "gt-react";
+
 
 
 interface CodePlaygroundProps {
@@ -123,7 +123,7 @@ const CodePlayground: React.FC<CodePlaygroundProps> = ({ onClose }) => {
     setTheme((prev) => prev === 'dark' ? 'light' : 'dark');
   };
 
-  return (<T id="components.codeplayground.2">
+  return (
     <div
       className={`w-full h-full flex flex-col ${
       theme === 'dark' ?
@@ -145,7 +145,7 @@ const CodePlayground: React.FC<CodePlaygroundProps> = ({ onClose }) => {
             'bg-[#eee] hover:bg-[#ddd]'}`
             }>
 
-            <Var>{theme === 'dark' ? <T id="components.codeplayground.0">{'Light Mode'}</T> : <T id="components.codeplayground.1">{'Dark Mode'}</T>}</Var>
+            {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
           </button>
         </div>
 
@@ -180,7 +180,7 @@ const CodePlayground: React.FC<CodePlaygroundProps> = ({ onClose }) => {
             }
             title="Copy Code">
 
-            <Var>{isCopied ? <Check size={16} className="text-green-500" /> : <Copy size={16} />}</Var>
+            {isCopied ? <Check size={16} className="text-green-500" /> : <Copy size={16} />}
           </button>
 
           <button
@@ -195,7 +195,7 @@ const CodePlayground: React.FC<CodePlaygroundProps> = ({ onClose }) => {
             <Download size={16} />
           </button>
 
-          <Var>{onClose && (
+          {onClose && (
             <button
               onClick={onClose}
               className={`p-1.5 rounded-md ${
@@ -207,7 +207,7 @@ const CodePlayground: React.FC<CodePlaygroundProps> = ({ onClose }) => {
 
               <X size={16} />
             </button>
-            )}</Var>
+            )}
         </div>
       </div>
 
@@ -262,7 +262,7 @@ const CodePlayground: React.FC<CodePlaygroundProps> = ({ onClose }) => {
             Output
           </div>
 
-          <Var>{error ? (
+          {error ? (
             <div className="p-3 font-mono text-sm text-red-400 whitespace-pre-wrap">
               {`// Error:\n${error}`}
             </div>
@@ -272,10 +272,10 @@ const CodePlayground: React.FC<CodePlaygroundProps> = ({ onClose }) => {
             }>
               {output}
             </div>
-            )}</Var>
+            )}
         </div>
       </div>
-    </div></T>
+    </div>
   );
 };
 

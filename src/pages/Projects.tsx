@@ -14,7 +14,6 @@ import erp from '../projects/ERP-AI.jpg';
 // import '@fontsource/space-grotesk'
 // import '@fontsource/inter'
 
-import { Var, T } from "gt-react";
 
 const Projects = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -211,7 +210,7 @@ const Projects = () => {
     planned: 'bg-blue-500'
   };
 
-  return (<T id="pages.projects.0">
+  return (
     <div ref={containerRef} className="relative w-full h-full bg-vscode-editor">
       <div className="relative w-full max-w-7xl mx-auto px-6 py-16">
         {/* Header */}
@@ -233,19 +232,19 @@ const Projects = () => {
 
         {/* Decorative Elements */}
         <div className="absolute inset-0 pointer-events-none">
-          <Var>{[Code2, Layers].map((Icon, index) => (
+          {[Code2, Layers].map((Icon, index) => (
             <Icon
               key={index}
               className={`floating-icon absolute text-vscode-accent/20 w-16 h-16
                 ${index % 2 ? 'left-[10%]' : 'right-[10%]'}
                 top-[${(index * 30) + 20}%]`} />
 
-            ))}</Var>
+            ))}
         </div>
 
         {/* Projects Grid */}
         <div className="projects-grid grid grid-cols-1 md:grid-cols-2 gap-8">
-          <Var>{projects.map((project) => (<T id="pages.projects.6">
+          {projects.map((project) => (
               <motion.div
                 key={project.title}
                 className="project-card group relative bg-white/5 rounded-xl overflow-hidden
@@ -255,7 +254,7 @@ const Projects = () => {
               {/* Project Image */}
               <div className="relative h-48 overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/50" />
-                <Var>{typeof project.image === 'string' ? (
+                {typeof project.image === 'string' ? (
                     <img
                       src={project.image}
                       alt={project.title}
@@ -265,44 +264,44 @@ const Projects = () => {
                     <div className="w-full h-full transform group-hover:scale-110 transition-transform duration-500">
                     {project.image}
                   </div>
-                    )}</Var>
+                    )}
                 {/* Year Badge */}
                 <span className="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-medium
                   bg-vscode-accent/90 text-white">
                     
-                  <Var>{project.year}</Var>
+                  {project.year}
                 </span>
                 {/* Status Badge */}
                 <span className={`absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-medium
                   ${statusColors[project.status as keyof typeof statusColors]} text-white/90`}>
-                  <Var>{project.status.charAt(0).toUpperCase() + project.status.slice(1)}</Var>
+                  {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
                 </span>
               </div>
 
               {/* Project Info */}
               <div className="p-6">
                 <h3 className="text-xl font-bold text-white mb-2 font-['Space_Grotesk']">
-                  <Var>{project.title}</Var>
+                  {project.title}
                 </h3>
                 <p className="text-white/60 text-sm mb-2 font-['Inter'] line-clamp-3">
-                  <Var>{project.description}</Var>
+                  {project.description}
                 </p>
 
                 {/* Role & Brief Summary */}
                 <div className="mb-3">
-                  <Var>{project.role && (<T id="pages.projects.1">
+                  {project.role && (
                         <div className="flex items-center gap-1 text-xs text-vscode-accent mb-1">
                       <span className="font-medium">Role:</span>
-                      <span><Var>{project.role}</Var></span>
-                    </div></T>
-                      )}</Var>
+                      <span>{project.role}</span>
+                    </div>
+                      )}
 
                   {/* Brief summary of the first detailed description point */}
-                  <Var>{project.detailedDescription && project.detailedDescription[0] && (
+                  {project.detailedDescription && project.detailedDescription[0] && (
                       <p className="text-white/70 text-sm mt-2">
                       {project.detailedDescription[0].split('.')[0]}.
                     </p>
-                      )}</Var>
+                      )}
                 </div>
 
                 {/* Read More Details - Collapsible */}
@@ -325,7 +324,7 @@ const Projects = () => {
                     </svg>
                   </summary>
                   <div className="pt-2 pl-2 border-l border-vscode-accent/30 mt-2 animate-slideDown">
-                    <Var>{project.detailedDescription && (
+                    {project.detailedDescription && (
                         <ul className="space-y-1 mb-2">
                         {project.detailedDescription.map((detail, idx) => (
                           <li key={idx} className="flex items-start">
@@ -334,19 +333,19 @@ const Projects = () => {
                           </li>
                           ))}
                       </ul>
-                        )}</Var>
-                    <Var>{project.challenges && (<T id="pages.projects.2">
+                        )}
+                    {project.challenges && (
                           <div className="mt-2">
                         <span className="text-vscode-accent font-medium">Challenges: </span>
-                        <span><Var>{project.challenges}</Var></span>
-                      </div></T>
-                        )}</Var>
+                        <span>{project.challenges}</span>
+                      </div>
+                        )}
                   </div>
                 </details>
 
                 {/* Tags */}
                 <div className="flex flex-wrap gap-2 mb-4">
-                  <Var>{project.tags.map((tag) => (
+                  {project.tags.map((tag) => (
                       <span
                         key={tag}
                         className="px-2 py-1 text-xs rounded-md bg-white/5 text-white/70
@@ -355,12 +354,12 @@ const Projects = () => {
                         
                       {tag}
                     </span>
-                      ))}</Var>
+                      ))}
                 </div>
 
                 {/* Links */}
                 <div className="flex gap-4">
-                  <Var>{project.github && (<T id="pages.projects.3">
+                  {project.github && (
                         <a
                           href={project.github}
                           target="_blank"
@@ -374,9 +373,9 @@ const Projects = () => {
                         <path d="M9 18c-4.51 2-5-2-7-2"></path>
                       </svg>
                       <span className="text-sm">Code</span>
-                    </a></T>
-                      )}</Var>
-                  <Var>{project.live && (<T id="pages.projects.4">
+                    </a>
+                      )}
+                  {project.live && (
                         <a
                           href={project.live}
                           target="_blank"
@@ -387,11 +386,11 @@ const Projects = () => {
                           
                       <ExternalLink className="w-4 h-4" />
                       <span className="text-sm">Live Demo</span>
-                    </a></T>
-                      )}</Var>
+                    </a>
+                      )}
 
                   {/* Share Button */}
-                  <Var>{project.live && (<T id="pages.projects.5">
+                  {project.live && (
                         <button
                           onClick={() => {
                             if (navigator.share) {
@@ -419,12 +418,12 @@ const Projects = () => {
                         <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
                       </svg>
                       <span className="text-sm">Share</span>
-                    </button></T>
-                      )}</Var>
+                    </button>
+                      )}
                 </div>
               </div>
-            </motion.div></T>
-            ))}</Var>
+            </motion.div>
+            ))}
         </div>
 
         {/* Future Projects Section - Optional, can be removed if not needed */}
@@ -438,7 +437,7 @@ const Projects = () => {
             Upcoming Projects
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <Var>{[
+            {[
               {
                 title: 'WebRTC Video Conferencing',
                 description: 'A peer-to-peer video conferencing application using WebRTC for direct browser-to-browser communication without servers.'
@@ -466,11 +465,11 @@ const Projects = () => {
                   {idea.description}
                 </p>
               </motion.div>
-              ))}</Var>
+              ))}
           </div>
         </motion.div>
       </div>
-    </div></T>
+    </div>
   );
 };
 

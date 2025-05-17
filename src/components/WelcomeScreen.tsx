@@ -16,7 +16,7 @@ import { GitHubIcon } from './icons/GitHubIcon';
 import { FileItem } from '../types';
 import { recentFiles } from '../data/fileStructure';
 import './WelcomeScreen.css';
-import { Var, T } from "gt-react";
+
 
 
 interface WelcomeScreenProps {
@@ -26,7 +26,7 @@ interface WelcomeScreenProps {
 
 const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onFileClick, onContactClick }) => {
 
-  return (<T id="components.welcomescreen.0">
+  return (
     <div className="h-full w-full flex flex-col px-4 py-8 welcome-screen-container">
       <div className="max-w-5xl w-full mx-auto">
         {/* Header - VS Code style with portfolio focus */}
@@ -48,35 +48,35 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onFileClick, onContactCli
               <button
                 onClick={() => onFileClick({ name: 'Home.tsx', type: 'file', path: '/pages/Home' })}
                 className="w-full text-left px-3 py-2 rounded flex items-center text-[#0098ff] hover:bg-[#2a2d2e] transition-colors welcome-button">
-                
+
                 <Home size={16} className="mr-3" />
                 <span>Home Page</span>
               </button>
               <button
                 onClick={() => onFileClick({ name: 'About.tsx', type: 'file', path: '/pages/About' })}
                 className="w-full text-left px-3 py-2 rounded flex items-center text-[#0098ff] hover:bg-[#2a2d2e] transition-colors welcome-button">
-                
+
                 <User size={16} className="mr-3" />
                 <span>About Me</span>
               </button>
               <button
                 onClick={() => onFileClick({ name: 'Projects.tsx', type: 'file', path: '/pages/Projects' })}
                 className="w-full text-left px-3 py-2 rounded flex items-center text-[#0098ff] hover:bg-[#2a2d2e] transition-colors welcome-button">
-                
+
                 <Code size={16} className="mr-3" />
                 <span>My Projects</span>
               </button>
               <button
                 onClick={() => onFileClick({ name: 'Skills.tsx', type: 'file', path: '/pages/Skills' })}
                 className="w-full text-left px-3 py-2 rounded flex items-center text-[#0098ff] hover:bg-[#2a2d2e] transition-colors welcome-button">
-                
+
                 <Briefcase size={16} className="mr-3" />
                 <span>Skills & Technologies</span>
               </button>
               <button
                 onClick={onContactClick}
                 className="w-full text-left px-3 py-2 rounded flex items-center text-[#0098ff] hover:bg-[#2a2d2e] transition-colors welcome-button">
-                
+
                 <Terminal size={16} className="mr-3" />
                 <span>Contact Me</span>
               </button>
@@ -85,16 +85,16 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onFileClick, onContactCli
             {/* Recent section */}
             <h2 className="text-white text-xl mt-8 mb-4">Recent</h2>
             <div className="space-y-2">
-              <Var>{recentFiles.map((file, index) => (<T id="components.welcomescreen.1">
+              {recentFiles.map((file, index) => (
                   <button
                     key={index}
                     onClick={() => onFileClick({ name: file.name, type: 'file', path: file.path })}
                     className="w-full text-left px-3 py-1 rounded flex items-center text-[#0098ff] hover:bg-[#2a2d2e] transition-colors welcome-button">
-                    
-                  <span className="truncate"><Var>{file.name}</Var></span>
-                  <span className="ml-2 text-[#6c6c6c] text-xs welcome-screen-recent-path">src/pages/<Var>{file.name}</Var></span>
-                </button></T>
-                ))}</Var>
+
+                  <span className="truncate">{file.name}</span>
+                  <span className="ml-2 text-[#6c6c6c] text-xs welcome-screen-recent-path">src/pages/{file.name}</span>
+                </button>
+                ))}
             </div>
           </div>
 
@@ -121,7 +121,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onFileClick, onContactCli
               <button
                 onClick={() => onFileClick({ name: 'Projects.tsx', type: 'file', path: '/pages/Projects' })}
                 className="w-full text-left px-4 py-2 bg-[#2d2d2d] text-[#0098ff] hover:bg-[#3a3a3a] transition-colors">
-                
+
                 View Projects
               </button>
             </div>
@@ -145,7 +145,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onFileClick, onContactCli
               <button
                 onClick={() => onFileClick({ name: 'Skills.tsx', type: 'file', path: '/pages/Skills' })}
                 className="w-full text-left px-4 py-2 bg-[#2d2d2d] text-[#0098ff] hover:bg-[#3a3a3a] transition-colors">
-                
+
                 View Skills
               </button>
             </div>
@@ -169,7 +169,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onFileClick, onContactCli
               <button
                 onClick={() => onFileClick({ name: 'About.tsx', type: 'file', path: '/pages/About' })}
                 className="w-full text-left px-4 py-2 bg-[#2d2d2d] text-[#0098ff] hover:bg-[#3a3a3a] transition-colors">
-                
+
                 View Details
               </button>
             </div>
@@ -184,7 +184,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onFileClick, onContactCli
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full text-left px-3 py-2 rounded flex items-center text-[#0098ff] hover:bg-[#2a2d2e] transition-colors welcome-button">
-                    
+
                     <GitHubIcon size={16} className="mr-3" />
                     <span>GitHub</span>
                     <ExternalLink size={12} className="ml-2 text-white/40" />
@@ -194,7 +194,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onFileClick, onContactCli
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full text-left px-3 py-2 rounded flex items-center text-[#0098ff] hover:bg-[#2a2d2e] transition-colors welcome-button">
-                    
+
                     <svg className="w-4 h-4 mr-3" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
                     </svg>
@@ -204,7 +204,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onFileClick, onContactCli
                   <button
                     onClick={onContactClick}
                     className="w-full text-left px-3 py-2 rounded flex items-center text-[#0098ff] hover:bg-[#2a2d2e] transition-colors welcome-button">
-                    
+
                     <Mail size={16} className="mr-3" />
                     <span>Contact Me</span>
                   </button>
@@ -213,7 +213,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onFileClick, onContactCli
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full text-left px-3 py-2 rounded flex items-center text-[#0098ff] hover:bg-[#2a2d2e] transition-colors welcome-button">
-                    
+
                     <Download size={16} className="mr-3" />
                     <span>Download Resume</span>
                     <ExternalLink size={12} className="ml-2 text-white/40" />
@@ -226,10 +226,10 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onFileClick, onContactCli
 
         {/* Footer - Simplified */}
         <div className="mt-8 text-[#6c6c6c] text-xs">
-          <p>© <Var>{new Date().getFullYear()}</Var> Anuj Dubey. Built with React, TypeScript, and Tailwind CSS</p>
+          <p>© {new Date().getFullYear()} Anuj Dubey. Built with React, TypeScript, and Tailwind CSS</p>
         </div>
       </div>
-    </div></T>
+    </div>
   );
 };
 

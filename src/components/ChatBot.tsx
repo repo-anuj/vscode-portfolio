@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, X, Minimize2, Maximize2, Bot, User, RefreshCw, Trash2 } from 'lucide-react';
-import { T, Var } from "gt-react";
+
 
 
 interface ChatBotProps {
@@ -248,7 +248,7 @@ const ChatBot: React.FC<ChatBotProps> = ({
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
-  return (<T id="components.chatbot.1">
+  return (
     <div
       className={`flex flex-col bg-[#1e1e1e] border border-[#2d2d2d] ${
       isFullscreen ? 'fixed inset-0 z-50' : 'h-full'} ${
@@ -261,7 +261,7 @@ const ChatBot: React.FC<ChatBotProps> = ({
           <span className="text-sm font-medium">Portfolio Assistant</span>
         </div>
         <div className="flex items-center">
-          <Var>{onToggleFullscreen && (
+          {onToggleFullscreen && (
             <button
               onClick={onToggleFullscreen}
               className="p-1.5 hover:bg-[#3d3d3d] rounded-sm transition-colors"
@@ -269,7 +269,7 @@ const ChatBot: React.FC<ChatBotProps> = ({
 
               {isFullscreen ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
             </button>
-            )}</Var>
+            )}
           <button
             onClick={onClose}
             className="p-1.5 hover:bg-[#3d3d3d] rounded-sm transition-colors ml-1"
@@ -282,7 +282,7 @@ const ChatBot: React.FC<ChatBotProps> = ({
 
       {/* Chat Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        <Var>{messages.filter((msg) => msg.role !== 'system').map((message, index) => (
+        {messages.filter((msg) => msg.role !== 'system').map((message, index) => (
           <div
             key={index}
             className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
@@ -301,7 +301,7 @@ const ChatBot: React.FC<ChatBotProps> = ({
                 <User size={16} className="text-green-400" />
                 )}
                 <span className={`text-xs ${message.role === 'user' ? 'text-green-400' : 'text-vscode-accent'}`}>
-                  {message.role === 'user' ? <T id="components.chatbot.2">{'You'}</T> : <T id="components.chatbot.3">{'Assistant'}</T>}
+                  {message.role === 'user' ? 'You' : 'Assistant'}
                 </span>
                 <span className="text-xs text-white/40 ml-auto">
                   {formatTime(message.timestamp)}
@@ -312,8 +312,8 @@ const ChatBot: React.FC<ChatBotProps> = ({
               </div>
             </div>
           </div>
-          ))}</Var>
-        <Var>{isLoading && (<T id="components.chatbot.0">
+          ))}
+        {isLoading && (
             <div className="flex justify-start">
             <div className="max-w-[80%] rounded-lg p-3 bg-[#2d2d2d] text-white/90">
               <div className="flex items-center gap-2 mb-1">
@@ -327,13 +327,13 @@ const ChatBot: React.FC<ChatBotProps> = ({
                 <span className="animate-pulse delay-200">•</span>
               </div>
             </div>
-          </div></T>
-          )}</Var>
-        <Var>{error && (
+          </div>
+          )}
+        {error && (
           <div className="text-red-400 text-sm p-2 bg-red-400/10 rounded-md">
             {error}
           </div>
-          )}</Var>
+          )}
         <div ref={messagesEndRef} />
       </div>
 
@@ -372,7 +372,7 @@ const ChatBot: React.FC<ChatBotProps> = ({
           </div>
         </div>
       </div>
-    </div></T>
+    </div>
   );
 };
 

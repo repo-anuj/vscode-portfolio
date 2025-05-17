@@ -1,6 +1,6 @@
 import React, { memo } from 'react'
 import { GitBranch, Wifi, Zap, FileJson, Globe, Coffee, Code } from 'lucide-react'
-import LanguageSelector from './LanguageSelector'
+
 
 /**
  * Props for the StatusBar component
@@ -62,7 +62,6 @@ const StatusBar: React.FC<StatusBarProps> = memo(({ className = '' }) => {
             <Globe size={14} />
             <span className="hidden sm:inline">UTF-8</span>
           </button>
-          <LanguageSelector />
           <button className="flex items-center gap-1 hover:text-white transition-colors px-1 py-0.5 rounded hover:bg-white/10 group">
             <Zap size={14} className="text-green-500 group-hover:animate-pulse" />
             <span className="hidden sm:inline">Ready</span>

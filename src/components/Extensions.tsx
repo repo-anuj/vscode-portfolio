@@ -4,7 +4,7 @@ import { X, Search, Download, RefreshCw, Package, Star, ExternalLink } from 'luc
 /**
  * Props for the Extensions component
  */
-import { T, Var } from "gt-react";
+
 
 interface ExtensionsProps {
   /** Whether the extensions panel is open */
@@ -182,7 +182,7 @@ const Extensions: React.FC<ExtensionsProps> = ({ isOpen, onClose, className = ''
 
   if (!isOpen) return null;
 
-  return (<T id="components.extensions.1">
+  return (
     <div className={`w-[300px] h-full bg-vscode-sidebar border-l border-[#1e1e1e] flex flex-col z-50 ${className}`}>
       {/* Header */}
       <div className="flex items-center justify-between p-2 border-b border-[#3c3c3c]">
@@ -190,7 +190,7 @@ const Extensions: React.FC<ExtensionsProps> = ({ isOpen, onClose, className = ''
         <button
           onClick={onClose}
           className="p-1 hover:bg-white/10 rounded-sm transition-colors">
-          
+
           <X size={16} className="text-white/60" />
         </button>
       </div>
@@ -205,7 +205,7 @@ const Extensions: React.FC<ExtensionsProps> = ({ isOpen, onClose, className = ''
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search Extensions..."
             className="w-full bg-transparent border-none outline-none py-1 text-sm text-white/90 placeholder-white/40" />
-          
+
         </div>
       </div>
 
@@ -218,7 +218,7 @@ const Extensions: React.FC<ExtensionsProps> = ({ isOpen, onClose, className = ''
           'text-white/60 hover:text-white/80'}`
           }
           onClick={() => setActiveTab('frontend')}>
-          
+
           Frontend
         </button>
         <button
@@ -228,7 +228,7 @@ const Extensions: React.FC<ExtensionsProps> = ({ isOpen, onClose, className = ''
           'text-white/60 hover:text-white/80'}`
           }
           onClick={() => setActiveTab('backend')}>
-          
+
           Backend
         </button>
         <button
@@ -238,17 +238,17 @@ const Extensions: React.FC<ExtensionsProps> = ({ isOpen, onClose, className = ''
           'text-white/60 hover:text-white/80'}`
           }
           onClick={() => setActiveTab('tools')}>
-          
+
           Tools
         </button>
       </div>
 
       {/* Extension List */}
       <div className="flex-1 overflow-y-auto">
-        <Var>{filteredExtensions.length === 0 ? (<T id="components.extensions.0">
+        {filteredExtensions.length === 0 ? (
             <div className="p-4 text-white/40 text-center text-sm">
             No extensions found
-          </div></T>
+          </div>
           ) : (
           <div className="divide-y divide-[#3c3c3c]/30">
             {filteredExtensions.map((extension) => (
@@ -258,15 +258,15 @@ const Extensions: React.FC<ExtensionsProps> = ({ isOpen, onClose, className = ''
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
                       <h3 className="text-sm font-medium text-white/90 truncate">{extension.name}</h3>
-                      {extension.installed ? (<T id="components.extensions.2">
+                      {extension.installed ? (
                       <button className="text-xs bg-[#4d4d4d] text-white/80 px-1.5 py-0.5 rounded-sm">
                           Installed
-                        </button></T>
-                    ) : (<T id="components.extensions.3">
+                        </button>
+                    ) : (
                       <button className="text-xs bg-blue-600 hover:bg-blue-700 text-white px-1.5 py-0.5 rounded-sm flex items-center">
                           <Download size={10} className="mr-1" />
                           Install
-                        </button></T>
+                        </button>
                     )}
                     </div>
                     <div className="text-xs text-white/60 flex items-center mt-0.5">
@@ -291,7 +291,7 @@ const Extensions: React.FC<ExtensionsProps> = ({ isOpen, onClose, className = ''
                       href="#"
                       className="ml-auto text-white/50 hover:text-white/80"
                       title="View in Marketplace">
-                      
+
                         <ExternalLink size={12} />
                       </a>
                     </div>
@@ -300,7 +300,7 @@ const Extensions: React.FC<ExtensionsProps> = ({ isOpen, onClose, className = ''
               </div>
             ))}
           </div>
-          )}</Var>
+          )}
       </div>
 
       {/* Footer */}
@@ -314,7 +314,7 @@ const Extensions: React.FC<ExtensionsProps> = ({ isOpen, onClose, className = ''
           More Extensions
         </button>
       </div>
-    </div></T>
+    </div>
   );
 };
 

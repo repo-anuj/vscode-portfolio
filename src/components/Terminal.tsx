@@ -15,7 +15,7 @@ import { LinkedInIcon } from './icons/LinkedInIcon';
 import emailjs from '@emailjs/browser';
 import CodePlayground from './CodePlayground';
 import ChatBot from './ChatBot';
-import { Var, T } from "gt-react";
+
 
 
 interface Command {
@@ -251,12 +251,12 @@ const COMMANDS: Record<string, Command> = {
           <div className="text-white/80">
               <div className="mb-2">
                 <span className="text-vscode-accent font-bold">{cmd.command}</span>
-                {cmd.aliases && cmd.aliases.length > 0 && (<T id="components.terminal.0">
-                <span className="text-white/60 ml-2">(aliases: <Var>{cmd.aliases.join(', ')}</Var>)</span></T>
+                {cmd.aliases && cmd.aliases.length > 0 && (
+                <span className="text-white/60 ml-2">(aliases: {cmd.aliases.join(', ')})</span>
               )}
               </div>
               <div className="mb-2">{cmd.description}</div>
-              {cmd.usage && <T id="components.terminal.1"><div className="mb-2">Usage: <Var>{cmd.usage}</Var></div></T>}
+              {cmd.usage && <div className="mb-2">Usage: {cmd.usage}</div>}
             </div>
           );
         } else {
@@ -264,19 +264,19 @@ const COMMANDS: Record<string, Command> = {
         }
       }
 
-      return (<T id="components.terminal.2">
+      return (
         <div className="text-white/80">
           <p className="mb-2">Available commands:</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1">
-            <Var>{Object.values(COMMANDS).map((cmd) => (
+            {Object.values(COMMANDS).map((cmd) => (
               <div key={cmd.command} className="flex items-start">
                 <span className="text-vscode-accent font-medium w-24 inline-block">{cmd.command}</span>
                 <span className="text-white/70">{cmd.description}</span>
               </div>
-              ))}</Var>
+              ))}
           </div>
           <p className="mt-3 text-white/60">Type 'help [command]' for more information about a specific command.</p>
-        </div></T>
+        </div>
       );
     }
   },
@@ -335,14 +335,14 @@ const COMMANDS: Record<string, Command> = {
       const condition = conditions[Math.floor(Math.random() * conditions.length)];
       const humidity = Math.floor(Math.random() * 50) + 30;
 
-      return (<T id="components.terminal.3">
+      return (
         <div className="space-y-1">
-          <div className="font-bold">Weather for <Var>{city}</Var>:</div>
-          <div>🌡️ Temperature: <Var>{temp}</Var>°C</div>
-          <div>🌤️ Conditions: <Var>{condition}</Var></div>
-          <div>💧 Humidity: <Var>{humidity}</Var>%</div>
+          <div className="font-bold">Weather for {city}:</div>
+          <div>🌡️ Temperature: {temp}°C</div>
+          <div>🌤️ Conditions: {condition}</div>
+          <div>💧 Humidity: {humidity}%</div>
           <div className="text-white/50 text-xs mt-2">Note: This is simulated weather data</div>
-        </div></T>
+        </div>
       );
     }
   },
@@ -351,11 +351,11 @@ const COMMANDS: Record<string, Command> = {
     description: 'Open my GitHub profile',
     action: (_, __) => {
       window.open('https://github.com/repo-anuj', '_blank');
-      return (<T id="components.terminal.4">
+      return (
         <div className="flex items-center gap-2">
           <GitHubIcon size={16} className="text-white" />
           <span>Opening GitHub profile in a new tab...</span>
-        </div></T>
+        </div>
       );
     }
   },
@@ -364,11 +364,11 @@ const COMMANDS: Record<string, Command> = {
     description: 'Open my LinkedIn profile',
     action: (_, __) => {
       window.open('https://linkedin.com/in/anuj-dubey', '_blank');
-      return (<T id="components.terminal.5">
+      return (
         <div className="flex items-center gap-2">
           <LinkedInIcon size={16} className="text-blue-500" />
           <span>Opening LinkedIn profile in a new tab...</span>
-        </div></T>
+        </div>
       );
     }
   },
@@ -399,10 +399,10 @@ const COMMANDS: Record<string, Command> = {
         'DevOps': ['Git', 'GitHub Actions', 'Docker', 'AWS', 'Vercel', 'Netlify'],
         'Tools': ['VS Code', 'Figma', 'Postman', 'Jest', 'Webpack']
       };
-      return (<T id="components.terminal.6">
+      return (
         <div className="text-white/80 space-y-3">
           <div className="text-lg font-bold text-vscode-accent">My Technical Skills</div>
-          <Var>{Object.entries(skills).map(([category, items]) => (
+          {Object.entries(skills).map(([category, items]) => (
             <div key={category} className="mb-2">
               <div className="text-vscode-accent font-medium mb-1">{category}:</div>
               <div className="pl-4 flex flex-wrap gap-1">
@@ -411,8 +411,8 @@ const COMMANDS: Record<string, Command> = {
                 ))}
               </div>
             </div>
-            ))}</Var>
-        </div></T>
+            ))}
+        </div>
       );
     }
   },
@@ -534,26 +534,26 @@ const COMMANDS: Record<string, Command> = {
     usage: 'theme [theme-name]',
     action: (args, terminal) => {
       if (args.length === 0) {
-        return (<T id="components.terminal.7">
+        return (
           <div className="space-y-2">
             <div>Available themes:</div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <Var>{TERMINAL_THEMES.map((theme) => (
+              {TERMINAL_THEMES.map((theme) => (
                 <div
                   key={theme.id}
                   className="flex items-center gap-2 p-2 rounded cursor-pointer hover:bg-white/10"
                   onClick={() => terminal.setTheme(theme)}>
-                  
+
                   <div
                     className="w-4 h-4 rounded-full"
                     style={{ backgroundColor: theme.accent }} />
-                  
+
                   <span>{theme.name}</span>
                 </div>
-                ))}</Var>
+                ))}
             </div>
             <div className="text-white/60 text-xs">Click on a theme to apply it, or use 'theme [name]'</div>
-          </div></T>
+          </div>
         );
       }
 
@@ -598,14 +598,14 @@ const COMMANDS: Record<string, Command> = {
     command: 'resume',
     description: 'View or download my resume',
     action: (_, __) => {
-      return (<T id="components.terminal.8">
+      return (
         <div className="space-y-3">
           <div className="text-lg font-bold">Anuj Dubey - Resume</div>
           <div className="flex gap-4">
             <button
               onClick={() => window.open('/Anuj_Dubey_Resume.pdf', '_blank')}
               className="flex items-center gap-2 px-3 py-2 bg-vscode-accent/20 hover:bg-vscode-accent/30 rounded-md transition-colors">
-              
+
               <FileText size={16} />
               <span>View Resume</span>
             </button>
@@ -613,12 +613,12 @@ const COMMANDS: Record<string, Command> = {
               href="/Anuj_Dubey_Resume.pdf"
               download
               className="flex items-center gap-2 px-3 py-2 bg-vscode-accent/20 hover:bg-vscode-accent/30 rounded-md transition-colors">
-              
+
               <Download size={16} />
               <span>Download PDF</span>
             </a>
           </div>
-        </div></T>
+        </div>
       );
     }
   },
@@ -626,7 +626,7 @@ const COMMANDS: Record<string, Command> = {
     command: 'tutorial',
     description: 'Start an interactive terminal tutorial',
     action: (_, terminal) => {
-      terminal.addLine('', (<T id="components.terminal.9">
+      terminal.addLine('', (
         <div className="space-y-3 bg-vscode-accent/10 p-3 rounded-md border-l-4 border-vscode-accent">
           <div className="text-lg font-bold">Welcome to the Terminal Tutorial!</div>
           <p>This terminal is a fully interactive command-line interface that simulates a real terminal experience.</p>
@@ -643,7 +643,7 @@ const COMMANDS: Record<string, Command> = {
           </ul>
           <p>Use the <span className="text-vscode-accent">help</span> command to see all available commands.</p>
           <p>Have fun exploring!</p>
-        </div></T>
+        </div>
       ));
       return '';
     }
@@ -655,14 +655,14 @@ const COMMANDS: Record<string, Command> = {
     action: (_, _terminal) => {
       return {
         __type: 'LAUNCH_CHATBOT',
-        content: (<T id="components.terminal.10">
+        content: (
           <div className="space-y-3 bg-vscode-accent/10 p-3 rounded-md border-l-4 border-vscode-accent">
             <div className="text-lg font-bold">AI Assistant</div>
             <p>Launching the AI assistant chatbot...</p>
             <p className="text-white/60 text-sm mt-2">
               The AI assistant can answer questions about my skills, projects, and experience.
             </p>
-          </div></T>
+          </div>
         )
       } as any;
     }
@@ -675,14 +675,14 @@ const COMMANDS: Record<string, Command> = {
     action: (_, _terminal) => {
       return {
         __type: 'LAUNCH_CODE_PLAYGROUND',
-        content: (<T id="components.terminal.11">
+        content: (
           <div className="space-y-3 bg-vscode-accent/10 p-3 rounded-md border-l-4 border-vscode-accent">
             <div className="text-lg font-bold">Code Playground</div>
             <p>Launching the interactive code playground...</p>
             <p className="text-white/60 text-sm mt-2">
               The code playground allows you to write and execute JavaScript code directly in your browser.
             </p>
-          </div></T>
+          </div>
         )
       } as any;
     }
@@ -692,7 +692,7 @@ const COMMANDS: Record<string, Command> = {
     command: 'social',
     description: 'Display my social media links and profiles',
     action: (_, terminal) => {
-      return (<T id="components.terminal.12">
+      return (
         <div className="space-y-4">
           <div className="text-lg font-bold text-vscode-accent">Connect with me</div>
 
@@ -706,7 +706,7 @@ const COMMANDS: Record<string, Command> = {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 px-3 py-2 bg-[#24292e]/80 hover:bg-[#24292e] text-white rounded-md transition-colors">
-                  
+
                   <GitHubIcon size={16} />
                   <span>GitHub</span>
                   <span className="text-xs text-white/50 ml-auto">@repo-anuj</span>
@@ -716,7 +716,7 @@ const COMMANDS: Record<string, Command> = {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 px-3 py-2 bg-[#0077b5]/80 hover:bg-[#0077b5] text-white rounded-md transition-colors">
-                  
+
                   <LinkedInIcon size={16} />
                   <span>LinkedIn</span>
                   <span className="text-xs text-white/50 ml-auto">anuj-dubey</span>
@@ -726,7 +726,7 @@ const COMMANDS: Record<string, Command> = {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 px-3 py-2 bg-[#632CA6]/80 hover:bg-[#632CA6] text-white rounded-md transition-colors">
-                  
+
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M7.42 10.05c-.18-.16-.46-.23-.84-.23H6l.02 2.44.04 2.45.56-.02c.41 0 .63-.07.83-.26.24-.24.26-.36.26-2.2 0-1.91-.02-1.96-.29-2.18zM0 4.94v14.12h24V4.94H0zM8.56 15.3c-.44.58-1.06.77-2.53.77H4.71V8.53h1.4c1.67 0 2.16.18 2.6.9.27.43.29.6.32 2.57.05 2.23-.02 2.73-.47 3.3zm5.09-5.47h-2.47v1.77h1.52v1.28l-.72.04-.75.03v1.77l1.22.03 1.2.04v1.28h-1.6c-1.53 0-1.6-.01-1.87-.3l-.3-.28v-3.16c0-3.02.01-3.18.25-3.48.23-.31.25-.31 1.88-.31h1.64v1.3zm4.68 5.45c-.17.43-.64.79-1 .79-.18 0-.45-.15-.67-.39-.32-.32-.45-.63-.82-2.08l-.9-3.39-.45-1.67h.76c.4 0 .75.02.75.05 0 .06 1.16 4.54 1.26 4.83.04.15.32-.7.73-2.3l.66-2.52.74-.04c.4-.02.73 0 .73.04 0 .14-1.67 6.38-1.8 6.68z" />
                   </svg>
@@ -745,7 +745,7 @@ const COMMANDS: Record<string, Command> = {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 px-3 py-2 bg-[#1DA1F2]/80 hover:bg-[#1DA1F2] text-white rounded-md transition-colors">
-                  
+
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
                   </svg>
@@ -757,7 +757,7 @@ const COMMANDS: Record<string, Command> = {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-[#405DE6] via-[#E1306C] to-[#FFDC80] text-white rounded-md transition-colors">
-                  
+
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
                   </svg>
@@ -768,16 +768,16 @@ const COMMANDS: Record<string, Command> = {
                   onClick={() => {
                     navigator.clipboard.writeText('anuj.dubey@example.com').
                     then(() => {
-                      terminal.addLine('', (<T id="components.terminal.13">
+                      terminal.addLine('', (
                         <div className="text-green-400">
                             ✓ Email copied to clipboard!
-                          </div></T>
+                          </div>
                       ));
                     }).
                     catch((err) => console.error('Could not copy email: ', err));
                   }}
                   className="flex items-center gap-2 px-3 py-2 bg-[#ea4335]/80 hover:bg-[#ea4335] text-white rounded-md transition-colors">
-                  
+
                   <Mail size={16} />
                   <span>Email</span>
                   <span className="text-xs text-white/50 ml-auto">Click to copy</span>
@@ -795,19 +795,19 @@ const COMMANDS: Record<string, Command> = {
             <div className="flex gap-2">
               <button
                 onClick={() => {
-                  terminal.addLine('', (<T id="components.terminal.14">
+                  terminal.addLine('', (
                     <div className="text-vscode-accent">
                       💡 Pro tip: Use the 'contact' command to send me a direct message!
-                    </div></T>
+                    </div>
                   ));
                 }}
                 className="px-3 py-1.5 bg-vscode-accent text-white rounded-md hover:bg-vscode-accent/90 transition-colors text-sm">
-                
+
                 Contact Me
               </button>
             </div>
           </div>
-        </div></T>
+        </div>
       );
     }
   }
@@ -932,26 +932,26 @@ const Terminal = ({ onClose, startContactForm, className = '', onLaunchCodePlayg
     switch (contactForm.step) {
       case 1: // Name entered
         if (input.trim().length < 2) {
-          output = (<T id="components.terminal.15">
+          output = (
             <div className="text-yellow-400">
               <p>⚠️ Please enter a valid name (at least 2 characters).</p>
               <p className="text-white/60 mt-1">Your name helps me address you properly in my response.</p>
-            </div></T>
+            </div>
           );
         } else if (!/^[a-zA-Z\s'-]+$/.test(input.trim())) {
-          output = (<T id="components.terminal.16">
+          output = (
             <div className="text-yellow-400">
               <p>⚠️ Please enter a name with valid characters (letters, spaces, hyphens, and apostrophes only).</p>
-            </div></T>
+            </div>
           );
         } else {
           setContactForm((prev) => ({ ...prev, name: input.trim(), step: 2 }));
-          output = (<T id="components.terminal.17">
+          output = (
             <div>
-              <p className="text-green-400">👋 Nice to meet you, <Var>{input.trim()}</Var>!</p>
+              <p className="text-green-400">👋 Nice to meet you, {input.trim()}!</p>
               <p className="mt-1">Please enter your email address:</p>
               <p className="text-white/60 text-xs mt-1">(This will be used to respond to your message)</p>
-            </div></T>
+            </div>
           );
         }
         break;
@@ -960,39 +960,39 @@ const Terminal = ({ onClose, startContactForm, className = '', onLaunchCodePlayg
         // More comprehensive email validation
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         if (!emailRegex.test(input.trim())) {
-          output = (<T id="components.terminal.18">
+          output = (
             <div className="text-yellow-400">
               <p>⚠️ Please enter a valid email address.</p>
               <p className="text-white/60 mt-1">Format: example@domain.com</p>
-            </div></T>
+            </div>
           );
         } else {
           setContactForm((prev) => ({ ...prev, email: input.trim(), step: 3 }));
-          output = (<T id="components.terminal.19">
+          output = (
             <div>
               <p className="text-green-400">📧 Great! Your email looks good.</p>
               <p className="mt-1">Now, what would you like to tell me?</p>
               <p className="text-white/60 mt-1">(Please be specific about your project, requirements, or questions)</p>
               <p className="text-white/60">(Type your message and press Enter)</p>
-            </div></T>
+            </div>
           );
         }
         break;
 
       case 3: // Message entered
         if (input.trim().length < 10) {
-          output = (<T id="components.terminal.20">
+          output = ( 
             <div className="text-yellow-400">
               <p>⚠️ Please enter a more detailed message (at least 10 characters).</p>
               <p className="text-white/60 mt-1">A detailed message helps me understand your needs better.</p>
-            </div></T>
+            </div>
           );
         } else if (input.trim().length > 1000) {
-          output = (<T id="components.terminal.21">
+          output = ( 
             <div className="text-yellow-400">
               <p>⚠️ Your message is too long (maximum 1000 characters).</p>
-              <p className="text-white/60 mt-1">Current length: <Var>{input.trim().length}</Var> characters. Please be more concise.</p>
-            </div></T>
+              <p className="text-white/60 mt-1">Current length: {input.trim().length} characters. Please be more concise.</p>
+            </div>
           );
         } else {
           setContactForm((prev) => ({ ...prev, message: input.trim() }));
@@ -1010,11 +1010,11 @@ const Terminal = ({ onClose, startContactForm, className = '', onLaunchCodePlayg
     const { name, email, message } = contactForm;
     if (!name || !email || !message) {
       setLines((prev) => [...prev, {
-        output: (<T id="components.terminal.22">
+        output: ( 
           <div className="text-yellow-400">
             <p>⚠️ Please fill in all fields before submitting.</p>
             <p className="text-white/60 mt-1">All information is required to process your message.</p>
-          </div></T>
+          </div>
         )
       }]);
       return;
@@ -1022,19 +1022,19 @@ const Terminal = ({ onClose, startContactForm, className = '', onLaunchCodePlayg
 
     setIsSubmitting(true);
     setLines((prev) => [...prev, {
-      output: (<T id="components.terminal.23">
+      output: ( 
         <div className="animate-pulse">
           <p>📤 Sending your message...</p>
           <div className="mt-2 flex space-x-1">
-            <Var>{[...Array(3)].map((_, i) => (
+            {[...Array(3)].map((_, i) => (
               <div
                 key={i}
                 className="w-2 h-2 rounded-full bg-vscode-accent"
                 style={{ animationDelay: `${i * 0.15}s` }}>
               </div>
-              ))}</Var>
+              ))}
           </div>
-        </div></T>
+        </div>
       )
     }]);
 
@@ -1056,7 +1056,7 @@ const Terminal = ({ onClose, startContactForm, className = '', onLaunchCodePlayg
       await new Promise((resolve) => setTimeout(resolve, 800));
 
       setLines((prev) => [...prev, {
-        output: (<T id="components.terminal.24">
+        output: ( 
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center">
@@ -1069,13 +1069,13 @@ const Terminal = ({ onClose, startContactForm, className = '', onLaunchCodePlayg
               <div className="text-white/90 font-medium mb-1">Message Summary:</div>
               <div className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-2 text-sm">
                 <span className="text-vscode-accent">Name:</span>
-                <span className="text-white/80"><Var>{name}</Var></span>
+                <span className="text-white/80">{name}</span>
 
                 <span className="text-vscode-accent">Email:</span>
-                <span className="text-white/80"><Var>{email}</Var></span>
+                <span className="text-white/80">{email}</span>
 
                 <span className="text-vscode-accent">Message:</span>
-                <span className="text-white/80 whitespace-pre-wrap"><Var>{message}</Var></span>
+                <span className="text-white/80 whitespace-pre-wrap">{message}</span>
               </div>
             </div>
 
@@ -1085,7 +1085,7 @@ const Terminal = ({ onClose, startContactForm, className = '', onLaunchCodePlayg
                 I'll review your message and get back to you within 24-48 hours. Thank you for reaching out!
               </p>
             </div>
-          </div></T>
+          </div>
         )
       }]);
       setContactForm({ step: 0, name: '', email: '', message: '' });
@@ -1093,7 +1093,7 @@ const Terminal = ({ onClose, startContactForm, className = '', onLaunchCodePlayg
     } catch (error) {
       console.error('Email sending failed:', error);
       setLines((prev) => [...prev, {
-        output: (<T id="components.terminal.25">
+        output: ( 
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-red-400">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -1110,7 +1110,7 @@ const Terminal = ({ onClose, startContactForm, className = '', onLaunchCodePlayg
                 Check your internet connection and try again in a few moments.
               </p>
             </div>
-          </div></T>
+          </div>
         )
       }]);
     } finally {
@@ -1268,7 +1268,7 @@ const Terminal = ({ onClose, startContactForm, className = '', onLaunchCodePlayg
     setLines((prev) => [...prev, { input, output }]);
   };
 
-  return (<T id="components.terminal.26">
+  return ( 
     <div
       className={`${className} fixed bottom-0 left-0 right-0 bg-[#1e1e1e] border-t border-[#2d2d2d] flex flex-col z-50 transition-all duration-200`}
       style={{
@@ -1276,17 +1276,17 @@ const Terminal = ({ onClose, startContactForm, className = '', onLaunchCodePlayg
         maxHeight: 'calc(100vh - 50px)'
       }}
       data-has-code-playground={onLaunchCodePlayground ? 'true' : 'false'}>
-      
-      <Var>{showCodePlayground && (
+
+      {showCodePlayground && (
         <div className="absolute inset-0 z-10 bg-[#1e1e1e]">
           <CodePlayground onClose={() => setShowCodePlayground(false)} />
         </div>
-        )}</Var>
-      <Var>{showChatBot && (
+        )}
+      {showChatBot && (
         <div className="absolute inset-0 z-10 bg-[#1e1e1e]">
           <ChatBot onClose={() => setShowChatBot(false)} />
         </div>
-        )}</Var>
+        )}
       {/* Resize Handle */}
       <div
         className="absolute -top-1 left-0 right-0 h-2 cursor-ns-resize group z-50"
@@ -1310,7 +1310,7 @@ const Terminal = ({ onClose, startContactForm, className = '', onLaunchCodePlayg
           document.addEventListener('mousemove', handleMouseMove);
           document.addEventListener('mouseup', handleMouseUp);
         }}>
-        
+
         <div className="w-full h-full group-hover:bg-vscode-accent/20 transition-colors" />
       </div>
 
@@ -1325,21 +1325,21 @@ const Terminal = ({ onClose, startContactForm, className = '', onLaunchCodePlayg
             onClick={() => setTerminalHeight(300)}
             className="hover:bg-[#3d3d3d] p-1.5 rounded-sm transition-colors"
             title="Minimize">
-            
+
             <Minus size={14} />
           </button>
           <button
             onClick={() => setIsMaximized((prev) => !prev)}
             className="hover:bg-[#3d3d3d] p-1.5 rounded-sm transition-colors mx-1"
             title={isMaximized ? "Restore" : "Maximize"}>
-            
-            <Var>{isMaximized ? <Square size={14} /> : <Maximize2 size={14} />}</Var>
+
+            {isMaximized ? <Square size={14} /> : <Maximize2 size={14} />}
           </button>
           <button
             onClick={onClose}
             className="hover:bg-[#3d3d3d] p-1.5 rounded-sm transition-colors hover:bg-red-500/20"
             title="Close">
-            
+
             <X size={14} />
           </button>
         </div>
@@ -1353,17 +1353,17 @@ const Terminal = ({ onClose, startContactForm, className = '', onLaunchCodePlayg
         role="log"
         aria-live="polite"
         aria-label="Terminal output">
-        
-        <Var>{lines.map((line, i) => (
+
+        {lines.map((line, i) => (
           <div key={i} className="mb-2 leading-relaxed">
-            {line.input !== undefined && (<T id="components.terminal.27">
+            {line.input !== undefined && ( 
               <div className="flex items-center gap-2 text-white/80 select-text">
                 <span className="text-green-400 whitespace-nowrap">portfolio@user</span>
                 <span className="text-white/40">:</span>
                 <span className="text-blue-400 whitespace-nowrap">~/portfolio/src</span>
                 <span className="text-white/40">$</span>
-                <span className="break-all"><Var>{line.input}</Var></span>
-              </div></T>
+                <span className="break-all">{line.input}</span>
+              </div>
             )}
             {line.output && (
             <div className="mt-1 text-white/70 whitespace-pre-line break-words select-text">
@@ -1371,7 +1371,7 @@ const Terminal = ({ onClose, startContactForm, className = '', onLaunchCodePlayg
               </div>
             )}
           </div>
-          ))}</Var>
+          ))}
         <div className="flex items-center gap-2 text-white/80">
           <span className="text-green-400 whitespace-nowrap">portfolio@user</span>
           <span className="text-white/40">:</span>
@@ -1390,10 +1390,10 @@ const Terminal = ({ onClose, startContactForm, className = '', onLaunchCodePlayg
             spellCheck="false"
             autoComplete="off"
             aria-autocomplete="none" />
-          
+
         </div>
       </div>
-    </div></T>
+    </div>
   );
 };
 

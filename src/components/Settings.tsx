@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Moon, Sun, Monitor, Palette, Type, Layout, X } from 'lucide-react';
 import { useTheme, THEMES } from '../contexts/ThemeContext';
-import { Var, T } from "gt-react";
+
 
 
 interface SettingsProps {
@@ -46,7 +46,7 @@ const Settings: React.FC<SettingsProps> = ({ onClose }) => {
     });
   };
 
-  return (<T id="components.settings.0">
+  return (
     <div className="h-full flex flex-col overflow-hidden">
       {/* Settings Header */}
       <div className="flex items-center justify-between p-4 border-b border-[#2d2d2d] bg-[#1e1e1e] text-white/80">
@@ -69,7 +69,7 @@ const Settings: React.FC<SettingsProps> = ({ onClose }) => {
               Color Theme
             </h2>
             <div className="space-y-3">
-              <Var>{THEMES.map((theme) => (
+              {THEMES.map((theme) => (
                 <button
                   key={theme.id}
                   className={`w-full flex items-center gap-3 p-3 rounded-lg transition-colors ${
@@ -90,7 +90,7 @@ const Settings: React.FC<SettingsProps> = ({ onClose }) => {
                   </div>
                   <span>{theme.name}</span>
                 </button>
-                ))}</Var>
+                ))}
             </div>
           </section>
 
@@ -218,7 +218,7 @@ const Settings: React.FC<SettingsProps> = ({ onClose }) => {
           </section>
         </div>
       </div>
-    </div></T>
+    </div>
   );
 };
 

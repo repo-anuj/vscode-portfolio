@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FileText, Bug, Terminal, Mail, Settings, X, Command, Package, Zap, Grid, Code, Bot } from 'lucide-react';
 import { FileItem } from '../types';
-import { T } from "gt-react";
+
 
 
 interface CommandPaletteProps {
@@ -319,7 +319,7 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({
             aria-autocomplete="list"
             aria-controls="command-list"
             aria-activedescendant={filteredCommands[selectedIndex]?.id || ''} />
-          
+
             {searchTerm && (
           <button
             onClick={() => {
@@ -329,7 +329,7 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({
             }}
             className="absolute right-0 top-1/2 -translate-y-1/2 p-1 hover:bg-white/10 rounded-sm transition-colors"
             aria-label="Clear search">
-            
+
                 <X size={14} className="text-white/60" />
               </button>
           )}
@@ -338,7 +338,7 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({
           onClick={onClose}
           className="p-1 hover:bg-white/10 rounded-sm transition-colors ml-2"
           aria-label="Close command palette">
-          
+
             <X size={16} className="text-white/60" />
           </button>
         </div>
@@ -350,11 +350,11 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({
         id="command-list"
         role="listbox"
         aria-label="Available commands">
-        
-          {filteredCommands.length === 0 ? (<T id="components.commandpalette.0">
+
+          {filteredCommands.length === 0 ? (
           <div className="p-4 text-white/40 text-center">
               No commands found
-            </div></T>
+            </div>
         ) : (
         <>
               {/* Group commands by category */}
@@ -386,7 +386,7 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({
                     command.action();
                   }
                 }}>
-                
+
                           <div className="flex items-center">
                             <span className={`mr-3 ${isSelected ? 'text-white' : 'text-white/60'}`}>
                               {command.icon}

@@ -6,7 +6,6 @@ import gsap from 'gsap';
 // import '@fontsource/space-grotesk'
 // import '@fontsource/inter'
 
-import { Var, T } from "gt-react";
 
 const Skills = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -116,7 +115,7 @@ const Skills = () => {
   'GIT', 'API', 'CSS', 'HTML', 'FIGMA', 'UI/UX', 'RESPONSIVE', 'FRONTEND', 'BACKEND'];
 
 
-  return (<T id="pages.skills.0">
+  return (
     <div ref={containerRef} className="relative w-full h-full bg-vscode-editor">
       {/* Content Container */}
       <div className="relative w-full max-w-6xl mx-auto px-8 py-16">
@@ -126,7 +125,7 @@ const Skills = () => {
             style={{ y }}
             className="whitespace-nowrap leading-none">
             
-            <Var>{[...Array(10)].map((_, i) => (
+            {[...Array(10)].map((_, i) => (
               <div
                 key={i}
                 className="text-[200px] font-bold font-['Space_Grotesk'] tracking-tight"
@@ -134,13 +133,13 @@ const Skills = () => {
                 
                 {backgroundWords.slice(0, 8).join(' ')}
               </div>
-              ))}</Var>
+              ))}
           </motion.div>
           <motion.div
             style={{ y: yReverse }}
             className="whitespace-nowrap leading-none">
             
-            <Var>{[...Array(10)].map((_, i) => (
+            {[...Array(10)].map((_, i) => (
               <div
                 key={i}
                 className="text-[200px] font-bold font-['Space_Grotesk'] tracking-tight"
@@ -148,7 +147,7 @@ const Skills = () => {
                 
                 {backgroundWords.slice(8).join(' ')}
               </div>
-              ))}</Var>
+              ))}
           </motion.div>
         </div>
 
@@ -171,19 +170,19 @@ const Skills = () => {
 
         {/* Floating Icons */}
         <div className="absolute inset-0 pointer-events-none">
-          <Var>{[Code2, Layers, Database, Palette, Globe, Cpu].map((Icon, index) => (
+          {[Code2, Layers, Database, Palette, Globe, Cpu].map((Icon, index) => (
             <Icon
               key={index}
               className={`floating-icon absolute text-vscode-accent/20 w-12 h-12
                 ${index % 2 ? 'left-[15%]' : 'right-[15%]'}
                 top-[${(index * 20) + 10}%]`} />
 
-            ))}</Var>
+            ))}
         </div>
 
         {/* Skills Grid */}
         <div className="skills-grid grid grid-cols-1 md:grid-cols-2 gap-8 relative">
-          <Var>{skillCategories.map((category) => (
+          {skillCategories.map((category) => (
             <motion.div
               key={category.title}
               className="skill-card bg-white/5 rounded-lg p-6 border border-white/10 
@@ -216,7 +215,7 @@ const Skills = () => {
                 ))}
               </div>
             </motion.div>
-            ))}</Var>
+            ))}
         </div>
 
         {/* Additional Skills */}
@@ -230,7 +229,7 @@ const Skills = () => {
             Additional Technologies & Tools
           </h3>
           <div className="flex flex-wrap justify-center gap-3">
-            <Var>{[
+            {[
               'VS Code', 'Postman', 'Jest', 'Redux', 'GraphQL', 'Webpack', 'Sass',
               'Firebase', 'Vercel', 'Netlify', 'Material UI', 'Bootstrap'].
               map((tech) => (
@@ -245,11 +244,11 @@ const Skills = () => {
                 
                 {tech}
               </motion.span>
-              ))}</Var>
+              ))}
           </div>
         </motion.div>
       </div>
-    </div></T>
+    </div>
   );
 };
 

@@ -21,8 +21,6 @@
     "confetti-js": "^0.0.18",
     "framer-motion": "^12.0.1",
     "gsap": "^3.12.7",
-    "gt-react": "^9.2.20",
-    "gtx-cli": "^1.2.9",
     "lucide-react": "^0.473.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

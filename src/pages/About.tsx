@@ -7,8 +7,6 @@ import Typed from 'typed.js';
 // import '@fontsource/space-grotesk'
 // import '@fontsource/inter'
 
-import { Var, T } from "gt-react";
-
 const About = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const typedRef = useRef<HTMLSpanElement>(null);
@@ -60,7 +58,7 @@ const About = () => {
     }
   };
 
-  return (<T id="pages.about.0">
+  return (
     <div ref={containerRef} className="relative w-full h-full bg-vscode-editor">
       {/* Background Elements */}
       <div className="absolute inset-0 pointer-events-none">
@@ -101,7 +99,7 @@ const About = () => {
             <h2 className="text-2xl font-bold text-white font-['Space_Grotesk']">Education</h2>
           </div>
           <div className="space-y-6">
-            <Var>{[
+            {[
               {
                 degree: 'Bachelor of Computer Applications (BCA)',
                 school: 'Shri Shankaracharya Professional University',
@@ -135,7 +133,7 @@ const About = () => {
                 )}
                 <p className="text-white/40 font-['Inter']">{edu.period}</p>
               </motion.div>
-              ))}</Var>
+              ))}
           </div>
         </motion.div>
 
@@ -150,7 +148,7 @@ const About = () => {
             <h2 className="text-2xl font-bold text-white font-['Space_Grotesk']">Certifications</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Var>{[
+            {[
               'Postman API Student Expert (Postman Academy)',
               'LetsUpgrade Student Ambassador',
               'Microsoft GitHub Administrator',
@@ -169,11 +167,11 @@ const About = () => {
                   </span>
                 </div>
               </motion.div>
-              ))}</Var>
+              ))}
           </div>
         </motion.div>
       </div>
-    </div></T>
+    </div>
   );
 };
 
