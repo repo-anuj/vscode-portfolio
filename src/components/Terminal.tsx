@@ -363,7 +363,7 @@ const COMMANDS: Record<string, Command> = {
     command: 'linkedin',
     description: 'Open my LinkedIn profile',
     action: (_, __) => {
-      window.open('https://linkedin.com/in/anuj-dubey', '_blank');
+      window.open('https://www.linkedin.com/in/anuj-0-dubey-26963527b/', '_blank');
       return (
         <div className="flex items-center gap-2">
           <LinkedInIcon size={16} className="text-blue-500" />
@@ -712,7 +712,7 @@ const COMMANDS: Record<string, Command> = {
                   <span className="text-xs text-white/50 ml-auto">@repo-anuj</span>
                 </a>
                 <a
-                  href="https://linkedin.com/in/anuj-dubey"
+                  href="https://www.linkedin.com/in/anuj-0-dubey-26963527b/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 px-3 py-2 bg-[#0077b5]/80 hover:bg-[#0077b5] text-white rounded-md transition-colors">
@@ -741,7 +741,7 @@ const COMMANDS: Record<string, Command> = {
               <h3 className="text-white/80 text-sm font-medium border-b border-white/10 pb-1">Social & Contact</h3>
               <div className="flex flex-col gap-2">
                 <a
-                  href="https://twitter.com/anujdubey_dev"
+                  href="https://x.com/JustO_OKidding"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 px-3 py-2 bg-[#1DA1F2]/80 hover:bg-[#1DA1F2] text-white rounded-md transition-colors">
@@ -753,7 +753,7 @@ const COMMANDS: Record<string, Command> = {
                   <span className="text-xs text-white/50 ml-auto">@anujdubey_dev</span>
                 </a>
                 <a
-                  href="https://instagram.com/anuj.codes"
+                  href="https://x.com/JustO_OKidding"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-[#405DE6] via-[#E1306C] to-[#FFDC80] text-white rounded-md transition-colors">
