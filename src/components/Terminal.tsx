@@ -228,9 +228,9 @@ Feel free to explore using the terminal commands or the sidebar navigation.
       name: 'contact.json',
       type: 'file',
       content: `{
-  "email": "anuj.dubey@example.com",
+  "email": "00a20.j50@gmai.com.com",
   "github": "https://github.com/repo-anuj",
-  "linkedin": "https://linkedin.com/in/anuj-dubey"
+  "linkedin": "https://www.linkedin.com/in/anuj-0-dubey-26963527b/"
 }`
     }
   }

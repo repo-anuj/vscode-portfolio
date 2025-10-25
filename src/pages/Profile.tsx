@@ -200,7 +200,7 @@ const Profile = () => {
               {[
                 {
                   icon: Mail,
-                  href: 'mailto:anuj.dubey@example.com',
+                  href: 'mailto:00a20.j50@gmail.com',
                   label: 'Email',
                   color: 'bg-gradient-to-r from-red-500/80 to-red-600/80 hover:from-red-500 hover:to-red-600'
                 },
@@ -212,13 +212,13 @@ const Profile = () => {
                 },
                 {
                   icon: Linkedin,
-                  href: 'https://linkedin.com/in/anuj-dubey',
+                  href: 'https://www.linkedin.com/in/anuj-0-dubey-26963527b/',
                   label: 'LinkedIn',
                   color: 'bg-gradient-to-r from-blue-600/80 to-blue-700/80 hover:from-blue-600 hover:to-blue-700'
                 },
                 {
                   icon: Twitter,
-                  href: 'https://twitter.com/anujdubey_dev',
+                  href: 'https://x.com/JustO_OKidding',
                   label: 'Twitter',
                   color: 'bg-gradient-to-r from-blue-400/80 to-blue-500/80 hover:from-blue-400 hover:to-blue-500'
                 },

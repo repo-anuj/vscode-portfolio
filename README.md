@@ -145,6 +145,6 @@ npm run build
 
 Feel free to reach out if you have any questions or feedback!
 
-- Email: anuj.dubey@example.com
+- Email: 00a20.j50@gmai.com.com
 - GitHub: [repo-anuj](https://github.com/repo-anuj)
-- LinkedIn: [anuj-dubey](https://linkedin.com/in/anuj-dubey)
+- LinkedIn: [anuj-dubey](https://www.linkedin.com/in/anuj-0-dubey-26963527b/)
